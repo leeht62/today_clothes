@@ -19,12 +19,12 @@ async def generate_image_from_prompt(input_data: SimpleInput):
     # 1. GPT에게 질문
     client = openai.OpenAI(api_key=OPEN_AI_API_KEY)
     completion = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are an AI that generates highly detailed image descriptions in English for Stable Diffusion."},
-            {"role": "user", "content": f"Please write a vivid, detailed image description in English for the following scene. Only return the English description. Scene: {input_data.prompt}"}
-        ],
-        temperature=0.5
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are an AI fashion stylist. Given a scene or situation, you recommend the most suitable outfit in English, describing the clothing in detail."},
+        {"role": "user", "content": f"Recommend a detailed outfit for the following scene or situation. Only return the English outfit description. Scene: {input_data.prompt}"}
+    ],
+    temperature=0.5
     )
     gpt_answer = completion.choices[0].message.content
 
