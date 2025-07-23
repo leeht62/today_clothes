@@ -10,7 +10,7 @@ import java.util.List;
 public interface BoardMapper {
   List<Board> findAll();
 
-  Board findById(String id);
+  Board findById(Long id);
   void save(Board board);
   void update(Board board);
   void deleteById(Long id);

@@ -7,7 +7,7 @@
         FROM users
 
     </select>
-    <select id="findById" resultType="com.server.today_clothes.VO.User" parameterType="string">
+    <select id="findById" resultType="com.server.today_clothes.VO.User" parameterType="long">
         SELECT id, user_code, password, name
         FROM users
         WHERE id = #{id}

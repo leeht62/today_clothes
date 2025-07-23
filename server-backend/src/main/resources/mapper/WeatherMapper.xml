@@ -8,7 +8,7 @@
         FROM weather
 
     </select>
-    <select id="findById" resultType="com.server.today_clothes.VO.Weather" parameterType="string">
+    <select id="findById" resultType="com.server.today_clothes.VO.Weather" parameterType="long">
         SELECT id, user_id, weather_prompt, image
         FROM weather
         WHERE id = #{id}

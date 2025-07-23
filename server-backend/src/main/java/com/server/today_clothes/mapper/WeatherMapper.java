@@ -9,7 +9,7 @@ import java.util.List;
 public interface WeatherMapper {
   List<Weather> findAll();
 
-  Weather findById(String id);
+  Weather findById(Long id);
   void save(Weather weather);
   void update(Weather weather);
   void deleteById(Long id);

@@ -7,7 +7,7 @@
         FROM boards
 
     </select>
-    <select id="findById" resultType="com.server.today_clothes.VO.Board" parameterType="string">
+    <select id="findById" resultType="com.server.today_clothes.VO.Board" parameterType="long">
         SELECT id, user_id, title, content,created_at
         FROM boards
         WHERE id = #{id}
