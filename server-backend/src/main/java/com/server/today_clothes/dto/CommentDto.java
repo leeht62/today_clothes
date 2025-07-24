@@ -1,5 +1,6 @@
 package com.server.today_clothes.dto;
 
+import com.server.today_clothes.VO.Board;
 import com.server.today_clothes.VO.Comment;
 import com.server.today_clothes.VO.User;
 import com.server.today_clothes.VO.Weather;
@@ -15,10 +16,13 @@ public class CommentDto {
   private String comment;
   private User user;
   private Weather weather;
+  private Board board;
   public CommentDto(Comment comment) {
     this.id = comment.getId();
     this.comment = comment.getComment();
     this.user=comment.getUser();
     this.weather=comment.getWeather();
+    this.board=comment.getBoard();
   }
+
 }

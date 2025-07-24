@@ -16,10 +16,21 @@ import java.util.List;
 public class CommentService {
   private final CommentMapper commentMapper;
 
-  public CommentDto saveComment(Comment comment){
-    commentMapper.save(comment);
-    CommentDto commentDto=new CommentDto(comment);
-    return commentDto;
+  public CommentDto saveWeatherComment(CommentDto commentDto){
+    Comment comment=new Comment(commentDto);
+    commentMapper.SaveComment(comment);
+    comment.setUser(commentDto.getUser());
+    comment.setWeather(commentDto.getWeather());
+    CommentDto commentDtos=new CommentDto(comment);
+    return commentDtos;
+  }
+  public CommentDto saveBoardComment(CommentDto commentDto){
+    Comment comment=new Comment(commentDto);
+    commentMapper.SaveComment(comment);
+    comment.setUser(commentDto.getUser());
+    comment.setBoard(commentDto.getBoard());
+    CommentDto commentDtos=new CommentDto(comment);
+    return commentDtos;
   }
   public CommentDto findComment(Long id){
     Comment comment=commentMapper.findById(id);
@@ -35,8 +46,13 @@ public class CommentService {
     }
     return CommentDtoList;
   }
-  public void update(Comment comment){
-    commentMapper.update(comment);
+  public void updateWeather(CommentDto commentDto){
+    Comment comment=new Comment(commentDto);
+    commentMapper.UpdateComment(comment);
+  }
+  public void updateBoard(CommentDto commentDto){
+    Comment comment=new Comment(commentDto);
+    commentMapper.UpdateComment(comment);
   }
   public void delete(Long id){
     commentMapper.deleteById(id);

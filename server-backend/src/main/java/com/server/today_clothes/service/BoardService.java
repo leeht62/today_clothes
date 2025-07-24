@@ -15,7 +15,8 @@ import java.util.List;
 public class BoardService {
   private final BoardMapper boardMapper;
 
-  public BoardDto saveBoard(Board board){
+  public BoardDto saveBoard(BoardDto boardDto){
+    Board board=new Board(boardDto);
     boardMapper.save(board);
     BoardDto boardDtos = new BoardDto(board);
     return boardDtos;
@@ -41,7 +42,8 @@ public class BoardService {
     return BoardDtoList;
   }
 
-  public void update(Board board){
+  public void update(BoardDto boardDto){
+    Board board=new Board(boardDto);
     boardMapper.update(board);
   }
 }

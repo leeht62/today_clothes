@@ -1,6 +1,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.server.mapper.CommentMapper">
+<mapper namespace="com.server.today_clothes.mapper.CommentMapper">
     <select id="findAll" resultType="com.server.today_clothes.VO.Comment">
         SELECT id, user_id, weather_id, comment
         FROM comment
@@ -10,17 +10,41 @@
         FROM comment
         WHERE id = #{id}
     </select>
-    <insert id="save" parameterType="com.server.today_clothes.VO.Comment"
+    <insert id="SaveComment" parameterType="com.server.today_clothes.VO.Comment"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO comment (user_id, weather_id, comment)
-        VALUES (#{userId}, #{weatherId}, #{comment})
+        INSERT INTO comment (user_id, comment,
+        <choose>
+            <when test="weather != null">weather_id</when>
+            <when test="board != null">board_id</when>
+            <otherwise>weather_id</otherwise>
+        </choose>
+        )
+        VALUES (
+        #{user.id}, #{comment},
+        <choose>
+            <when test="weather != null">#{weather.id}</when>
+            <when test="board != null">#{board.id}</when>
+            <otherwise>NULL</otherwise>
+        </choose>
+        )
     </insert>
-    <update id="update" parameterType="com.server.today_clothes.VO.Comment">
+    <update id="UpdateComment" parameterType="com.server.today_clothes.VO.Comment">
         UPDATE comment
         SET
-            user_id = #{userId},
-            weather_id = #{weatherId},
-            comment = #{comment}
+            user_id = #{user.id},
+            comment = #{comment},
+            <choose>
+                <when test="weather != null">
+                    weather_id = #{weather.id},
+                    board_id = NULL  </when>
+                <when test="board != null">
+                    board_id = #{board.id},
+                    weather_id = NULL  </when>
+                <otherwise>
+                    weather_id = NULL,
+                    board_id = NULL
+                </otherwise>
+            </choose>
         WHERE id = #{id}
     </update>
     <delete id="deleteById" parameterType="long">

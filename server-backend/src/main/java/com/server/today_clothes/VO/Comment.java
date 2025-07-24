@@ -1,5 +1,6 @@
 package com.server.today_clothes.VO;
 
+import com.server.today_clothes.dto.CommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,11 @@ public class Comment {
   private User user;
   private Weather weather;
   private String comment;
+  private Board board;
+
+  public Comment(CommentDto commentDto) {
+    this.comment = commentDto.getComment();
+  }
+
 
 }

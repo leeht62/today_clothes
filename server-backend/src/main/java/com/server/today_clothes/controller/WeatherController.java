@@ -21,4 +21,5 @@ public class WeatherController {
     }
     return ResponseEntity.ok(response);
   }
+
 }

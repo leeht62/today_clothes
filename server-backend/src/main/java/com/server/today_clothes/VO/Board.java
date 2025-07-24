@@ -1,4 +1,6 @@
 package com.server.today_clothes.VO;
+import com.server.today_clothes.dto.BoardDto;
+import com.server.today_clothes.dto.CommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,5 +20,12 @@ public class Board {
   private String title;
   private String content;
   private LocalDateTime Date;
+
+
+  public Board(BoardDto boardDto) {
+    this.title = boardDto.getTitle();
+    this.content = boardDto.getContent();
+    this.Date =LocalDateTime.now();
+  }
 
 }

@@ -18,3 +18,11 @@ CREATE TABLE IF NOT EXISTS boards(
     content TEXT,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE comment (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    board_id BIGINT,
+    weather_id BIGINT,
+    comment TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
