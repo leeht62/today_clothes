@@ -17,6 +17,7 @@ public class Comment {
   private String comment;
   private Board board;
 
+
   public Comment(CommentDto commentDto) {
     this.comment = commentDto.getComment();
   }
