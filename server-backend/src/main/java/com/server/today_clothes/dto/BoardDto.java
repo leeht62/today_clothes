@@ -26,6 +26,6 @@ public class BoardDto {
     this.content = board.getContent();
     this.date = board.getDate();
     this.userCode = board.getUser().getUserCode();
-    this.name =  board.getUser().getName();
+    this.name =  board.getUser().getUsername();
   }
 }

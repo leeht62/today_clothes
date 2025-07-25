@@ -1,15 +1,11 @@
 package com.server.today_clothes.controller;
 
-import com.server.today_clothes.VO.Comment;
 import com.server.today_clothes.dto.CommentDto;
 import com.server.today_clothes.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

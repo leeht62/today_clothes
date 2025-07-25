@@ -2,16 +2,17 @@ package com.server.today_clothes.controller;
 
 import com.server.today_clothes.dto.WeatherDto;
 import com.server.today_clothes.service.WeatherAiService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+
+@RestController
+@RequiredArgsConstructor
 public class WeatherController {
   private final WeatherAiService weatherAiService;
-
-  public WeatherController(WeatherAiService weatherAiService) {
-    this.weatherAiService = weatherAiService;
-  }
 
   @GetMapping("/weather-image")
   public ResponseEntity<WeatherDto> getWeatherImage() {

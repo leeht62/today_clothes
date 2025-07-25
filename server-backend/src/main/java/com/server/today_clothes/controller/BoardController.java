@@ -1,6 +1,5 @@
 package com.server.today_clothes.controller;
 
-import com.server.today_clothes.VO.Board;
 import com.server.today_clothes.dto.BoardDto;
 import com.server.today_clothes.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
