@@ -38,10 +38,11 @@ public class SecurityConfig {
 
         // 요청에 대한 권한 설정
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/sign-in").permitAll()
-            .requestMatchers("/sign-up").permitAll()	// ⭐️
-            .requestMatchers("/members/test").hasRole("USER")
-            .anyRequest().authenticated()
+            .requestMatchers("/sign-up").permitAll()
+            .requestMatchers("/weather-image").authenticated()
+            .anyRequest().permitAll()
         )
 
         // JWT 필터 등록

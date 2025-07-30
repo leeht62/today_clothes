@@ -16,12 +16,12 @@
     <insert id="save" parameterType="com.server.today_clothes.VO.Weather"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO weather (user_id, weather_prompt, image, created_at)
-        VALUES (#{user.id}, #{weatherPrompt}, #{image}, NOW())
+        VALUES (#{userId}, #{weatherPrompt}, #{image}, NOW())
     </insert>
     <update id="update" parameterType="com.server.today_clothes.VO.Weather">
         UPDATE weather
         SET
-            user_id = #{user.id},
+            user_id = #{userId},
             weather_prompt = #{weatherPrompt},
             image = #{image}
         WHERE id = #{id}
