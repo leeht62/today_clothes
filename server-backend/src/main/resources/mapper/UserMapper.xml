@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.server.today_clothes.mapper.UserMapper">
+    <resultMap id="UserResultMap" type="com.server.today_clothes.VO.User">
+        <id property="id" column="id"/>
+        <result property="userCode" column="user_code"/>
+        <result property="password" column="password"/>
+        <result property="username" column="user_name"/>
+    </resultMap>
+
+    <select id="findAll" resultType="com.server.today_clothes.VO.User">
+        SELECT id, user_code, password, user_name
+        FROM users
+
+    </select>
+    <select id="findById" resultType="com.server.today_clothes.VO.User" parameterType="long">
+        SELECT id, user_code, password, user_name
+        FROM users
+        WHERE id = #{id}
+    </select>
+    <select id="findByUserCode" resultType="com.server.today_clothes.VO.User" parameterType="String">
+        SELECT id, user_code, password, user_name
+        FROM users
+        WHERE user_code = #{userCode}
+    </select>
+    <select id="findByUserName" resultType="com.server.today_clothes.VO.User" parameterType="String">
+        SELECT id, user_code, password, user_name
+        FROM users
+        WHERE user_name = #{userName}
+    </select>
+    <insert id="save" parameterType="com.server.today_clothes.VO.User"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (user_code, password, user_name)
+        VALUES (#{userCode}, #{password}, #{username})
+    </insert>
+    <update id="update" parameterType="com.server.today_clothes.VO.User">
+        UPDATE users
+        SET
+            user_code = #{userCode},
+            password = #{password},
+            user_name = #{username}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+</mapper>

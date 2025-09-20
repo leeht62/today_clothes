@@ -1,0 +1,32 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.server.today_clothes.mapper.CommentMapper">
+    <select id="findAll" resultType="com.server.today_clothes.VO.Comment">
+        SELECT id, user_id, comment
+        FROM comment
+    </select>
+    <select id="findById" resultType="com.server.today_clothes.VO.Comment" parameterType="long">
+        SELECT id, user_id, comment
+        FROM comment
+        WHERE id = #{id}
+    </select>
+    <insert id="SaveComment" parameterType="com.server.today_clothes.VO.Comment"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment (user_id, comment, board_id,created_at)
+        VALUES (#{user.id}, #{comment}, #{board.id}, #{createdAt})
+    </insert>
+    <update id="UpdateComment" parameterType="com.server.today_clothes.VO.Comment">
+        UPDATE comment
+        SET
+            user_id = #{user.id},
+            comment = #{comment},
+            board_id = #{board.id}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM comment WHERE id = #{id}
+    </delete>
+
+
+
+</mapper>

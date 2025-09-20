@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS weather (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    weather_prompt TEXT,
+    image TEXT,
+    gpt_answer TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    user_code VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    user_name VARCHAR(100)
+);
+CREATE TABLE IF NOT EXISTS boards(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    weather_id INTEGER REFERENCES weather(id) ON DELETE SET NULL,
+    title VARCHAR(100),
+    content TEXT,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE IF NOT EXISTS comment (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    board_id INTEGER NOT NULL REFERENCES boards(id),
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
