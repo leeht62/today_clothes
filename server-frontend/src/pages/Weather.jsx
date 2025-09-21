@@ -124,9 +124,9 @@ const Weather = () => {
 
       {/* 모든 날씨 데이터 */}
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">모든 날씨 데이터</h2>
+        <h2 className="text-xl font-semibold mb-4">모든 의상 데이터</h2>
         <p className="text-gray-600 mb-4">
-          저장된 모든 날씨 데이터를 확인할 수 있습니다.
+          본인의 저장된 모든 의상 데이터를 확인할 수 있습니다.
         </p>
         
         <button
@@ -134,12 +134,12 @@ const Weather = () => {
           disabled={loading}
           className="bg-gray-600 text-white px-6 py-3 rounded-md hover:bg-gray-700 disabled:opacity-50"
         >
-          {loading ? '로딩 중...' : '모든 날씨 데이터 보기'}
+          {loading ? '로딩 중...' : '모든 의상 데이터 보기'}
         </button>
 
         {showAll && allWeather.length > 0 && (
           <div className="mt-6 space-y-4">
-            <h3 className="text-lg font-semibold">저장된 날씨 데이터</h3>
+            <h3 className="text-lg font-semibold">저장된 의상 데이터</h3>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {allWeather.map((weather, index) => (
                 <div key={weather.id || index} className="border rounded-lg p-4">
@@ -152,7 +152,12 @@ const Weather = () => {
                       className="mt-2 w-full h-32 object-cover rounded"
                     />
                   )}
-                  
+                  <button
+                  onClick={() => handleGoToPost(weather)}
+                  className="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  >
+                    게시글 작성하기
+                  </button>
                 </div>
               ))}
             </div>
@@ -161,7 +166,7 @@ const Weather = () => {
 
         {showAll && allWeather.length === 0 && (
           <div className="mt-6 text-center text-gray-500">
-            저장된 날씨 데이터가 없습니다.
+            저장된 의상 데이터가 없습니다.
           </div>
         )}
       </div>

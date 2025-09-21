@@ -6,6 +6,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     userCode: '',
     password: '',
+    name: '',           
     confirmPassword: ''
   })
   const [error, setError] = useState('')
@@ -39,6 +40,7 @@ const Register = () => {
 
     const result = await register({
       userCode: formData.userCode,
+      name: formData.name,
       password: formData.password
     })
     
@@ -82,6 +84,21 @@ const Register = () => {
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="아이디 (userCode)"
                 value={formData.userCode}
+                onChange={handleChange}
+              />
+            </div>
+             <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                닉네임
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="닉네임"
+                value={formData.name}
                 onChange={handleChange}
               />
             </div>

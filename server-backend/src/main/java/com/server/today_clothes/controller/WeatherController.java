@@ -34,8 +34,9 @@ public class WeatherController {
     return ResponseEntity.ok(savedDto);
   }
   @GetMapping("/find-all-weather")
-  public ResponseEntity<List<WeatherDto>> getAllWeather(){
-    return ResponseEntity.ok(weatherService.findAllWeather());
+  public ResponseEntity<List<WeatherDto>> getAllWeather(Principal principal){
+    String userCode = principal.getName();
+    return ResponseEntity.ok(weatherService.findAllWeather(userCode));
   }
 //
   @GetMapping("/find-one-weather/{Id}")

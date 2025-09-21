@@ -20,7 +20,21 @@ const PostList = () => {
     try {
       setLoading(true);
       const response = await boardAPI.getBoards();
-      setPosts(response.data || []);
+      const boards = response.data || [];
+
+      // 각 게시글의 Redis likeCount 가져오기
+      const boardsWithLikes = await Promise.all(
+        boards.map(async (board) => {
+          try {
+            const res = await boardAPI.getBoardLikeCount(board.id);
+            return { ...board, likeCount: res.data ?? 0 };
+          } catch {
+            return { ...board, likeCount: 0 };
+          }
+        })
+      );
+
+      setPosts(boardsWithLikes);
     } catch (err) {
       console.error('게시글 로딩 실패:', err);
       setError('게시글을 불러오는데 실패했습니다.');
@@ -33,7 +47,7 @@ const PostList = () => {
     loadPosts();
   }, []);
 
-  // WebSocket 메시지 처리 (토스트 알림용, loadPosts() 제거)
+  // WebSocket 메시지 → 토스트만
   useEffect(() => {
     if (notifications.length > 0) {
       notifications.forEach((msg) => {
@@ -70,8 +84,18 @@ const PostList = () => {
     );
 
     try {
+      // 서버 반영 (Redis 업데이트)
       await boardAPI.likeBoard(boardId);
-      // 성공: UI 이미 반영, WebSocket은 토스트만 사용
+
+      // 최신 Redis 값 가져와서 동기화
+      const res = await boardAPI.getBoardLikeCount(boardId);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id.toString() === boardId.toString()
+            ? { ...post, likeCount: res.data ?? post.likeCount }
+            : post
+        )
+      );
     } catch (err) {
       console.error('좋아요 처리 실패:', err);
       setError('좋아요 처리에 실패했습니다.');
@@ -95,14 +119,19 @@ const PostList = () => {
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
             {error}
-            <button onClick={() => setError('')} className="ml-2 text-red-500 hover:text-red-700">
+            <button
+              onClick={() => setError('')}
+              className="ml-2 text-red-500 hover:text-red-700"
+            >
               ✕
             </button>
           </div>
         )}
 
         {posts.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">게시글이 없습니다.</div>
+          <div className="text-center py-12 text-gray-500">
+            게시글이 없습니다.
+          </div>
         ) : (
           posts.map((post) => (
             <div key={post.id} className="bg-white p-6 rounded-lg shadow">
@@ -112,7 +141,9 @@ const PostList = () => {
               >
                 {post.title || '제목 없음'}
               </h3>
-              <p className="text-gray-600 mb-4">{post.content || '내용 없음'}</p>
+              <p className="text-gray-600 mb-4">
+                {post.content || '내용 없음'}
+              </p>
               <div className="flex justify-between items-center text-sm text-gray-500">
                 <span>작성자: {post.user?.userCode || '익명'}</span>
                 <div className="flex space-x-4">
@@ -130,47 +161,6 @@ const PostList = () => {
           ))
         )}
       </div>
-
-      {/* 알림 토스트 */}
-      <div className="fixed top-5 right-5 space-y-2 z-50">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className="flex items-start space-x-2 bg-white border-l-4 border-green-500 shadow-lg rounded p-3 w-80 animate-slide-in"
-          >
-            <div className="flex-1">
-              <p className="text-sm font-medium text-green-700">좋아요 알림</p>
-              <p className="text-sm text-gray-700">{toast.displayMessage}</p>
-              {toast.boardId && (
-                <button
-                  onClick={() => navigate(`/posts/${toast.boardId}`)}
-                  className="text-xs text-blue-500 hover:text-blue-700 mt-1"
-                >
-                  게시글 보기 →
-                </button>
-              )}
-            </div>
-            <button
-              onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              ✕
-            </button>
-          </div>
-        ))}
-      </div>
-
-      <style>
-        {`
-          @keyframes slide-in {
-            0% { transform: translateX(100%); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-          }
-          .animate-slide-in {
-            animation: slide-in 0.3s ease-out;
-          }
-        `}
-      </style>
     </>
   );
 };

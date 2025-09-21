@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { boardAPI } from '../lib/api'
 
 const Ranking = () => {
@@ -15,8 +15,24 @@ const Ranking = () => {
     try {
       setLoading(true)
       const response = await boardAPI.getTopBoards(count)
-      setTopBoards(response.data || [])
+      const boards = response.data || []
+
+      // 각 게시글 좋아요 수 Redis에서 가져오기
+      const boardsWithLikes = await Promise.all(
+        boards.map(async (board) => {
+          try {
+            const res = await boardAPI.getBoardLikeCount(board.id || board.boardId)
+            return { ...board, likeCount: res.data ?? 0 }
+          } catch (err) {
+            console.error('좋아요 수 가져오기 실패:', err)
+            return { ...board, likeCount: board.likeCount ?? 0 }
+          }
+        })
+      )
+
+      setTopBoards(boardsWithLikes)
     } catch (err) {
+      console.error(err)
       setError('순위 데이터를 불러오는데 실패했습니다.')
     } finally {
       setLoading(false)
@@ -83,7 +99,7 @@ const Ranking = () => {
                       </p>
                       <div className="mt-2 flex items-center space-x-4 text-sm text-gray-500">
                         <span>작성자: {board.userCode || board.author || '익명'}</span>
-                        <span>좋아요: {board.likeCount || 0}</span>
+                        <span>좋아요: {board.likeCount ?? 0}</span>
                       </div>
                     </div>
                   </div>

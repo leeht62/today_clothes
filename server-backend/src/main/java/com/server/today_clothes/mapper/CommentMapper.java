@@ -10,6 +10,7 @@ public interface CommentMapper {
   List<Comment> findAll();
 
   Comment findById(Long id);
+  List<Comment> findByBoardId(Long id);
   void SaveComment(Comment comment);
   void UpdateComment(Comment commnet);
   void deleteById(Long id);

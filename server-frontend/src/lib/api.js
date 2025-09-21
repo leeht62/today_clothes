@@ -51,6 +51,7 @@ export const boardAPI = {
   likeBoard: (id) => api.post(`/boards/${id}/like`),
   unlikeBoard: (id) => api.post(`/boards/${id}/unlike`),
   getTopBoards: (count = 10) => api.get(`/boards/top?count=${count}`),
+  getBoardLikeCount: (boardId) => api.get(`/boards/${boardId}/likes/count`)
 }
 
 export const weatherAPI = {

@@ -37,10 +37,14 @@ public class CommentService {
     CommentDto commentDtos=new CommentDto(comment);
     return commentDtos;
   }
-  public CommentDto findComment(Long id){
-    Comment comment=commentMapper.findById(id);
-    CommentDto commentDto=new CommentDto(comment);
-    return commentDto;
+  public List<CommentDto> findComments(Long id){
+    List<Comment> comments=commentMapper.findByBoardId(id);
+    List<CommentDto> commentDtoList = new ArrayList<>();
+    for(Comment comment : comments){
+      CommentDto commentDto = new CommentDto(comment);
+      commentDtoList.add(commentDto);
+    }
+    return commentDtoList;
   }
   public List<CommentDto> findAllBoard(){
     List<Comment> commentDtos=commentMapper.findAll();

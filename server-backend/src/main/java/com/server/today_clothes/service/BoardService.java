@@ -59,7 +59,9 @@ public class BoardService {
     }
     return BoardDtoList;
   }
-
+  public Double getBoardLikeCount(Long boardId) {
+    return redisService.getBoardLikeCount(boardId);
+  }
   public void update(BoardDto boardDto){
     Board board=new Board(boardDto);
     boardMapper.update(board);

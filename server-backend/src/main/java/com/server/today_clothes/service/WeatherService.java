@@ -37,8 +37,9 @@ public class WeatherService {
     return weatherDto;
   }
 
-  public List<WeatherDto> findAllWeather(){
-    List<Weather> weathers=weatherMapper.findAll();
+  public List<WeatherDto> findAllWeather(String username){
+    User user=userMapper.findByUserName(username);
+    List<Weather> weathers=weatherMapper.findAll(user.getId());
     List<WeatherDto> WeatherDtos=new ArrayList<>();
     for(Weather weather : weathers){
       WeatherDto weatherDto=new WeatherDto(weather);

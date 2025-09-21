@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +18,8 @@ public class CommentController {
   private final CommentService commentService;
 
   @GetMapping("/{boardId}/comment")
-  public ResponseEntity<CommentDto> getComment(@PathVariable Long boardId){
-    return ResponseEntity.ok(commentService.findComment(boardId));
+  public ResponseEntity<List<CommentDto>> getComment(@PathVariable Long boardId){
+    return ResponseEntity.ok(commentService.findComments(boardId));
   }
   @PostMapping("/{boardId}/weatherComments")
   public ResponseEntity<CommentDto> createWeatherComment(CommentDto commentDto, Principal principal){

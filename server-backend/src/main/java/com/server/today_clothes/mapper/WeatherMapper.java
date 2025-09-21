@@ -7,7 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface WeatherMapper {
-  List<Weather> findAll();
+  List<Weather> findAll(Long userId);
 
   Weather findById(Long id);
   void save(Weather weather);

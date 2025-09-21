@@ -72,5 +72,10 @@ public class BoardController {
   public ResponseEntity<List<BoardDto>> topBoards(@RequestParam(defaultValue = "10") int count){
     return ResponseEntity.ok(boardService.findTopBoards(count));
   }
+  @GetMapping("/{boardId}/likes/count")
+  public ResponseEntity<Double> getBoardLikeCount(@PathVariable Long boardId) {
+    Double count = boardService.getBoardLikeCount(boardId);
+    return ResponseEntity.ok(count);
+  }
 
 }

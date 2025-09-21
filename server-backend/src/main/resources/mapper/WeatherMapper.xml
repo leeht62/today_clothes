@@ -6,7 +6,7 @@
     <select id="findAll" resultType="com.server.today_clothes.VO.Weather">
         SELECT id, user_id, weather_prompt, image
         FROM weather
-
+        WHERE user_id=#{userId}
     </select>
     <select id="findById" resultType="com.server.today_clothes.VO.Weather" parameterType="long">
         SELECT id, user_id, weather_prompt, image
