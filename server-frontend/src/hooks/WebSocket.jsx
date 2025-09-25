@@ -33,7 +33,7 @@ const useWebSocket = (userToken) => {
 
     // STOMP 클라이언트 생성
     const client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      webSocketFactory: () => new SockJS(env.VITE_WS_URL),
       reconnectDelay: 5000, // 자동 재연결
       debug: (str) => {
         // 필요한 디버그 로그만 표시, 너무 많으면 주석 처리 가능
