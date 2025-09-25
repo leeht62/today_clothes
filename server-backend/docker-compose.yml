@@ -1,29 +1,53 @@
-version: '3.8'
 
 services:
-  postgres:
-    image: postgres:16.9-alpine
-    container_name: postgres
+  spring-server:
+    build: .
+    container_name: spring-server
     ports:
-      - "5432:5432"
+      - "8080:8080"
+    depends_on:
+      my-db:
+        condition: service_healthy
+      my-cache-server:
+        condition: service_healthy
+
+  fastapi-server:
+    build: ../ai-backend
+    container_name: fastapi-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      my-db:
+        condition: service_healthy
+      my-cache-server:
+        condition: service_healthy
+
+  my-db:
+    image: postgres:15
+    container_name: postgres-db
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: clothes
     volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  spring-app:
-    image: demo-server
-    container_name: spring-app
-    depends_on:
-      - postgres
+      - ./pgdata:/var/lib/postgresql/data
     ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clothes
-      SPRING_DATASOURCE_USERNAME: test
-      SPRING_DATASOURCE_PASSWORD: 1234
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test"]
+      interval: 5s
+      retries: 10
+
+  my-cache-server:
+    image: redis:7
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+
 
 volumes:
   pgdata:

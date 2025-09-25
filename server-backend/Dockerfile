@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk
+FROM openjdk:17-jdk
 
 COPY build/libs/*SNAPSHOT.jar app.jar
 

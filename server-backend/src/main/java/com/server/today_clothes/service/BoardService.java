@@ -90,10 +90,10 @@ public class BoardService {
     MessageDto event = new MessageDto(
         "LIKE",
         "회원 " + userName + "님이 게시글을 좋아합니다.",
-        userName,
+        board.getUser().getUsername(),
         boardId
     );
-    messageService.publishNotification(userName, event);
+    messageService.publishNotification(board.getUser().getUsername(), event);
   }
 
 

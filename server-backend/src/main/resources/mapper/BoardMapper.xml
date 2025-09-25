@@ -30,7 +30,7 @@
     </select>
     <select id="findById" resultType="com.server.today_clothes.VO.Board" parameterType="long">
         SELECT b.id, b.user_id, b.title, b.content, b.date, b.weather_id,
-               u.id as "user.id", u.user_code as "user.userCode",
+               u.id as "user.id", u.user_name as "user.username",
                w.id as "weather.id", w.weather_prompt as "weather.weatherPrompt",
                w.image as "weather.image"
         FROM boards b
