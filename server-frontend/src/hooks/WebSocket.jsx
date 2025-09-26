@@ -4,7 +4,6 @@ import SockJS from 'sockjs-client';
 
 const useWebSocket = (userToken) => {
   const [messages, setMessages] = useState([]);
-  const WS_BASE_URL = import.meta.env.VITE_WS_URL
 
   //  URL-safe Base64 JWT 디코딩 함수
   const decodeJWT = (token) => {
@@ -34,7 +33,7 @@ const useWebSocket = (userToken) => {
 
     // STOMP 클라이언트 생성
     const client = new Client({
-      webSocketFactory: () => new SockJS(WS_BASE_URL),
+      webSocketFactory: () => new SockJS('/ws'),
       reconnectDelay: 5000, // 자동 재연결
       debug: (str) => {
         // 필요한 디버그 로그만 표시, 너무 많으면 주석 처리 가능
