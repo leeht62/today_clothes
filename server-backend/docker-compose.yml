@@ -11,8 +11,8 @@ services:
       my-cache-server:
         condition: service_healthy
     environment:
-      - spring.data.redis.host=my-cache-server
-      - spring.data.redis.port=6379
+      - SPRING_DATA_REDIS_HOST=my-cache-server
+      - SPRING_DATA_REDIS_PORT=6379
 
   fastapi-server:
     build: ../ai-backend
