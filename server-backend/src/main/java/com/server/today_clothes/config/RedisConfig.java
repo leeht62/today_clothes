@@ -19,6 +19,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 public class RedisConfig {
 
+  @Value("${spring.data.redis.host:localhost}")
+  private String redisHost;
+
+  @Value("${spring.data.redis.port:6379}")
+  private int redisPort;
+
   @Bean
   public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
     RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -27,10 +33,8 @@ public class RedisConfig {
   }
 
   @Bean
-  public RedisConnectionFactory redisConnectionFactory(
-      @Value("${spring.data.redis.host}") String host,
-      @Value("${spring.data.redis.port}") int port) {
-    RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
+  public RedisConnectionFactory redisConnectionFactory() {
+    RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
     return new LettuceConnectionFactory(config);
   }
 
