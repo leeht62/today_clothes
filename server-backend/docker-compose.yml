@@ -10,9 +10,7 @@ services:
         condition: service_healthy
       my-cache-server:
         condition: service_healthy
-    environment:
-      spring.data.redis.host: my-cache-server
-      spring.data.redis.port: 6379
+    command: sh -c "sleep 10 && java -jar /app.jar"
 
   fastapi-server:
     build: ../ai-backend
