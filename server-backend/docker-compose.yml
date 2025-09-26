@@ -10,6 +10,9 @@ services:
         condition: service_healthy
       my-cache-server:
         condition: service_healthy
+    environment:
+      SPRING_REDIS_HOST: my-cache-server
+      SPRING_REDIS_PORT: 6379
 
   fastapi-server:
     build: ../ai-backend
