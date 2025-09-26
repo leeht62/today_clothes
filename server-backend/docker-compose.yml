@@ -10,7 +10,6 @@ services:
         condition: service_healthy
       my-cache-server:
         condition: service_healthy
-    command: sh -c "sleep 10 && java -jar /app.jar"
 
   fastapi-server:
     build: ../ai-backend
