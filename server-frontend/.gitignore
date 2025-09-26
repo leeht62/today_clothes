@@ -1,5 +1,2 @@
 node_modules/
-
-
-VITE_API_BASE_URL=/api 
-VITE_WS_URL=/ws 
+.env
