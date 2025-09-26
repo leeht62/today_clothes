@@ -1,10 +1,8 @@
-import { defineConfig, loadEnv } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig, loadEnv } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default ({ mode }) => {
-  // .env 파일 로드
-  const env = loadEnv(mode, process.cwd(), '')
+  const env = loadEnv(mode, process.cwd(), '');
 
   return defineConfig({
     plugins: [react()],
@@ -12,14 +10,22 @@ export default ({ mode }) => {
       host: '0.0.0.0',
       port: 3000,
       proxy: {
+        // API 프록시 설정
         '/api': {
-          target: env.VITE_BACKEND_URL,
+          target: 'http://13.124.79.106:8080', 
           changeOrigin: true,
-        }
-      }
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+        // WebSocket 프록시 설정
+        '/ws': {
+          target: 'http://13.124.79.106:8080',
+          changeOrigin: true,
+          ws: true, // WebSocket 프록시 활성화
+        },
+      },
     },
     build: {
-      outDir: 'dist'
-    }
-  })
-}
+      outDir: 'dist',
+    },
+  });
+};
