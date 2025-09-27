@@ -13,7 +13,7 @@ export default ({ mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'http://localhost:8080',
+          target: 'https://today-clothes.shop',
           changeOrigin: true,
         }
       }
