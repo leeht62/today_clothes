@@ -60,21 +60,6 @@ public class SecurityConfig {
         .build();
   }
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
-    config.setAllowedOriginPatterns(List.of(
-        "https://today-clothes.shop",
-        "https://www.today-clothes.shop"
-    ));
-    config.addAllowedHeader("*");
-    config.addAllowedMethod("*");
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/api/**", config); // /api/**만 허용
-    return source;
-  }
-  @Bean
   public PasswordEncoder passwordEncoder() {
     // BCrypt Encoder 사용
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
