@@ -69,7 +69,7 @@ public class SecurityConfig {
     config.addAllowedMethod("*");
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
+    source.registerCorsConfiguration("/api/**", config);
     return new CorsFilter(source);
   }
   @Bean
