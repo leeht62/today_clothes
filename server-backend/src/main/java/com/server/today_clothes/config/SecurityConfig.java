@@ -63,9 +63,8 @@ public class SecurityConfig {
         "https://www.today-clothes.shop",
         "https://today-clothes.shop",
         "http://www.today-clothes.shop",
-        "http://today-clothes.shop",
-        "http://localhost:8080",
-        "http://localhost:3000"
+        "http://today-clothes.shop"
+        ,"today-clothes.shop"
     ));
     configuration.setAllowedMethods(List.of(
         "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"

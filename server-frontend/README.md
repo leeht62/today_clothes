@@ -129,3 +129,4 @@ src/
 ### 스타일 수정
 - TailwindCSS 클래스 사용
 - 커스텀 스타일은 `src/index.css`에 추가
+
