@@ -52,7 +52,7 @@ public class SecurityConfig {
         )
         .logout(logout -> logout.disable())
         // JWT 필터 등록
-
+        .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,redisTemplate), UsernamePasswordAuthenticationFilter.class)
 
         .build();
   }
