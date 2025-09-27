@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +33,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(Customizer.withDefaults())
         // REST API이므로 basic auth 및 csrf 보안을 사용하지 않음
         .httpBasic(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
@@ -57,33 +58,25 @@ public class SecurityConfig {
         .build();
   }
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of(
-        "https://www.today-clothes.shop",
-        "https://today-clothes.shop",
-        "http://www.today-clothes.shop",
-        "http://today-clothes.shop"
-        ,"today-clothes.shop"
-    ));
-    configuration.setAllowedMethods(List.of(
-        "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
-    ));
-    configuration.setAllowedHeaders(List.of("*"));
-    configuration.setExposedHeaders(List.of(
-        "Authorization", "Set-Cookie"
-    ));
-    configuration.setAllowCredentials(true);
-    configuration.setMaxAge(3600L);
+  public CorsFilter corsFilter() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOriginPattern("https://today-clothes.shop");
+    config.addAllowedOriginPattern("https://www.today-clothes.shop");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("*");
+
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
+    source.registerCorsConfiguration("/**", config);
+    return new CorsFilter(source);
   }
-
-
   @Bean
   public PasswordEncoder passwordEncoder() {
     // BCrypt Encoder 사용
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
 }
+
+
+
+
