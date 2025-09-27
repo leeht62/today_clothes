@@ -60,6 +60,7 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of(
+        "https://www.today-clothes.shop",
         "https://today-clothes.shop"
     ));
     configuration.setAllowedMethods(List.of(
