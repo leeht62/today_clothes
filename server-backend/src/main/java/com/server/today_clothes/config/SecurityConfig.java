@@ -32,6 +32,9 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
+    http.headers(headers -> headers.frameOptions(Customizer.withDefaults()));
+
     return http
         .cors(Customizer.withDefaults())
         // REST API이므로 basic auth 및 csrf 보안을 사용하지 않음
@@ -45,11 +48,11 @@ public class SecurityConfig {
         // 요청에 대한 권한 설정
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers("/api/sign-in").permitAll()
-            .requestMatchers("/api/sign-up").permitAll()
+            .requestMatchers("/sign-in").permitAll()
+            .requestMatchers("/sign-up").permitAll()
             .requestMatchers("/logout").permitAll()
             .requestMatchers("/weather-image").authenticated()
-            .anyRequest().permitAll()
+            .anyRequest().authenticated()
         )
         .logout(logout -> logout.disable())
         // JWT 필터 등록
