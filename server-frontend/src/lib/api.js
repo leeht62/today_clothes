@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-console.log("API BASE URL:", process.env.REACT_APP_API_URL)
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: 'https://today-clothes.shop/api',
   headers: {
     'Content-Type': 'application/json',
   },
