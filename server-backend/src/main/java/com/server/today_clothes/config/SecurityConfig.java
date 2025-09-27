@@ -60,10 +60,7 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of(
-        "http://13.124.79.106",
-        "http://localhost:3000",   // 로컬 React
-        "http://127.0.0.1:3000",   // 로컬 React alternative
-        "http://react-app:80"      // 도커 환경 React 컨테이너
+        "https://today-clothes.shop"
     ));
     configuration.setAllowedMethods(List.of(
         "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
