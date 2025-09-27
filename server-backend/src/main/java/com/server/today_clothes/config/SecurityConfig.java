@@ -62,8 +62,7 @@ public class SecurityConfig {
     configuration.setAllowedOrigins(List.of(
         "https://www.today-clothes.shop",
         "https://today-clothes.shop",
-        "http://today-clothes.shop",      // HTTP 추가
-        "http://www.today-clothes.shop"
+        "https://localhost:3000"
     ));
     configuration.setAllowedMethods(List.of(
         "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"

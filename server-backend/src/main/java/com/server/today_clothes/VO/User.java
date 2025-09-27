@@ -22,10 +22,8 @@ public class User implements UserDetails{
 
   private String username;
 
-  @NotBlank(message = "아이디는 필수입니다.")
   private String userCode;
 
-  @NotBlank(message = "비밀번호는 필수입니다.")
   private String password;
 
 
