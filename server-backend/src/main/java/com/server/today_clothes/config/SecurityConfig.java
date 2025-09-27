@@ -30,32 +30,10 @@ public class SecurityConfig {
   private final RedisTemplate<String, Object> redisTemplate;
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        // REST API이므로 basic auth 및 csrf 보안을 사용하지 않음
-        .httpBasic(Customizer.withDefaults())
-        .csrf(csrf -> csrf.disable())
-
-        // JWT를 사용하기 때문에 세션을 사용하지 않음
-        .sessionManagement(session ->
-            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-        // 요청에 대한 권한 설정
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers("/sign-in").permitAll()
-            .requestMatchers("/sign-up").permitAll()
-            .requestMatchers("/logout").permitAll()
-            .requestMatchers("/weather-image").authenticated()
-            .anyRequest().permitAll()
-        )
-        .logout(logout -> logout.disable())
-        // JWT 필터 등록
-        .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,redisTemplate), UsernamePasswordAuthenticationFilter.class)
-
-        .build();
+  public PasswordEncoder passwordEncoder() {
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
+
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
@@ -81,10 +59,29 @@ public class SecurityConfig {
     return source;
   }
 
-
+  // ✨ 1. 인증이 필요 없는 공개 API용 필터 체인
   @Bean
-  public PasswordEncoder passwordEncoder() {
-    // BCrypt Encoder 사용
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  public SecurityFilterChain publicFilterChain(HttpSecurity http) throws Exception {
+    return http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .httpBasic(Customizer.withDefaults())
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .securityMatcher("/sign-in", "/sign-up", "/logout")
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .build();
+  }
+
+  // ✨ 2. 인증이 필요한 API용 필터 체인
+  @Bean
+  public SecurityFilterChain privateFilterChain(HttpSecurity http) throws Exception {
+    return http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .httpBasic(Customizer.withDefaults())
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+        .build();
   }
 }
