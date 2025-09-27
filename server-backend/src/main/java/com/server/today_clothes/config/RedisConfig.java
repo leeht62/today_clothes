@@ -25,6 +25,8 @@ public class RedisConfig {
   @Value("${spring.data.redis.port:6379}")
   private int redisPort;
 
+
+
   @Bean
   public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
     RedisMessageListenerContainer container = new RedisMessageListenerContainer();
