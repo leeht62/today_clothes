@@ -61,7 +61,8 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of(
         "https://www.today-clothes.shop",
-        "https://today-clothes.shop"
+        "https://today-clothes.shop",
+        "http://localhost:8080"
     ));
     configuration.setAllowedMethods(List.of(
         "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
