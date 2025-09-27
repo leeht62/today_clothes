@@ -45,8 +45,8 @@ public class SecurityConfig {
         // 요청에 대한 권한 설정
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers("/sign-in").permitAll()
-            .requestMatchers("/sign-up").permitAll()
+            .requestMatchers("/api/sign-in").permitAll()
+            .requestMatchers("/api/sign-up").permitAll()
             .requestMatchers("/logout").permitAll()
             .requestMatchers("/weather-image").authenticated()
             .anyRequest().permitAll()
