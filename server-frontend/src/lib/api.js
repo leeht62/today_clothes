@@ -2,7 +2,7 @@ import axios from 'axios'
 
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: '/api/', // ✨ baseURL에 슬래시 추가
   headers: {
     'Content-Type': 'application/json',
   },
@@ -37,36 +37,36 @@ api.interceptors.response.use(
 )
 
 export const authAPI = {
-  signUp: (userData) => api.post('/sign-up', userData),
-  signIn: (userData) => api.post('/sign-in', userData),
-  logout: () => api.post('/logout'),
+  signUp: (userData) => api.post('sign-up', userData), // ✨ 슬래시 제거
+  signIn: (userData) => api.post('sign-in', userData), // ✨ 슬래시 제거
+  logout: () => api.post('logout'), // ✨ 슬래시 제거
 }
 
 export const boardAPI = {
-  getBoards: () => api.get('/boards/getBoard'),
-  getBoard: (id) => api.get(`/boards/${id}/read`),
-  createBoard: (boardData) => api.post('/boards/write', boardData),
-  updateBoard: (id, boardData) => api.put(`/boards/${id}/modify`, boardData),
-  deleteBoard: (id) => api.patch(`/boards/${id}/delete`),
-  likeBoard: (id) => api.post(`/boards/${id}/like`),
-  unlikeBoard: (id) => api.post(`/boards/${id}/unlike`),
-  getTopBoards: (count = 10) => api.get(`/boards/top?count=${count}`),
-  getBoardLikeCount: (boardId) => api.get(`/boards/${boardId}/likes/count`)
+  getBoards: () => api.get('boards/getBoard'), // ✨ 슬래시 제거
+  getBoard: (id) => api.get(`boards/${id}/read`), // ✨ 슬래시 제거
+  createBoard: (boardData) => api.post('boards/write', boardData), // ✨ 슬래시 제거
+  updateBoard: (id, boardData) => api.put(`boards/${id}/modify`, boardData), // ✨ 슬래시 제거
+  deleteBoard: (id) => api.patch(`boards/${id}/delete`), // ✨ 슬래시 제거
+  likeBoard: (id) => api.post(`boards/${id}/like`), // ✨ 슬래시 제거
+  unlikeBoard: (id) => api.post(`boards/${id}/unlike`), // ✨ 슬래시 제거
+  getTopBoards: (count = 10) => api.get(`boards/top?count=${count}`), // ✨ 슬래시 제거
+  getBoardLikeCount: (boardId) => api.get(`boards/${boardId}/likes/count`) // ✨ 슬래시 제거
 }
 
 export const weatherAPI = {
-  getWeatherImage: () => api.get('/weather-image'),
-  getAllWeather: () => api.get('/find-all-weather'),
-  getWeather: (id) => api.get(`/find-one-weather/${id}`),
+  getWeatherImage: () => api.get('weather-image'), // ✨ 슬래시 제거
+  getAllWeather: () => api.get('find-all-weather'), // ✨ 슬래시 제거
+  getWeather: (id) => api.get(`find-one-weather/${id}`), // ✨ 슬래시 제거
 }
 
 export const commentAPI = {
-  getComment: (boardId) => api.get(`/${boardId}/comment`),
-  createWeatherComment: (boardId, commentData) => api.post(`/${boardId}/weatherComments`, commentData),
-  createBoardComment: (boardId, commentData) => api.post(`/${boardId}/boardComments`, commentData),
-  updateBoardComment: (boardId, commentId, commentData) => api.put(`/${boardId}/boardComments/${commentId}`, commentData),
-  deleteComment: (commentId) => api.patch(`/admin/${commentId}/deletecomment`),
-  commentBoard: (boardId, commentData) => api.post(`/${boardId}/comment`, commentData),
+  getComment: (boardId) => api.get(`${boardId}/comment`), // ✨ 슬래시 제거
+  createWeatherComment: (boardId, commentData) => api.post(`${boardId}/weatherComments`, commentData), // ✨ 슬래시 제거
+  createBoardComment: (boardId, commentData) => api.post(`${boardId}/boardComments`, commentData), // ✨ 슬래시 제거
+  updateBoardComment: (boardId, commentId, commentData) => api.put(`${boardId}/boardComments/${commentId}`, commentData), // ✨ 슬래시 제거
+  deleteComment: (commentId) => api.patch(`admin/${commentId}/deletecomment`), // ✨ 슬래시 제거
+  commentBoard: (boardId, commentData) => api.post(`${boardId}/comment`, commentData), // ✨ 슬래시 제거
 }
 
 export default api
