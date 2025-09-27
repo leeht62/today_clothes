@@ -59,15 +59,21 @@ public class SecurityConfig {
   }
   @Bean
   public CorsFilter corsFilter() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
-    config.addAllowedOriginPattern("https://today-clothes.shop");
-    config.addAllowedOriginPattern("https://www.today-clothes.shop");
-    config.addAllowedHeader("*");
-    config.addAllowedMethod("*");
-
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
+    CorsConfiguration config = new CorsConfiguration();
+    config.addAllowedOrigin("^https?:\\/\\/today-clothes.shop$"); // e.g. /**, http://domain1.com
+    config.addAllowedHeader(CorsConfiguration.ALL);
+    config.addAllowedMethod(HttpMethod.GET);
+    config.addAllowedMethod(HttpMethod.POST);
+    config.addAllowedMethod(HttpMethod.HEAD);
+    config.addAllowedMethod(HttpMethod.PUT);
+    config.addAllowedMethod(HttpMethod.DELETE);
+    config.addAllowedMethod(HttpMethod.TRACE);
+    config.addAllowedMethod(HttpMethod.OPTIONS);
+    config.setAllowCredentials(true);
+    config.setMaxAge(3600L);
+
+    source.registerCorsConfiguration("^https?:\\/\\/today-clothes.shop$", config); // "/**"
     return new CorsFilter(source);
   }
   @Bean
