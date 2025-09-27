@@ -60,17 +60,19 @@ public class SecurityConfig {
         .build();
   }
   @Bean
-  public CorsFilter corsFilter() {
+  public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
-    config.addAllowedOriginPattern("https://today-clothes.shop");
-    config.addAllowedOriginPattern("https://www.today-clothes.shop");
+    config.setAllowedOriginPatterns(List.of(
+        "https://today-clothes.shop",
+        "https://www.today-clothes.shop"
+    ));
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/api/**", config);
-    return new CorsFilter(source);
+    source.registerCorsConfiguration("/api/**", config); // /api/**만 허용
+    return source;
   }
   @Bean
   public PasswordEncoder passwordEncoder() {
