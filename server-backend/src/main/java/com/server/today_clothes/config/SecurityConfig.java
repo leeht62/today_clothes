@@ -32,8 +32,7 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
-    http.headers(headers -> headers.frameOptions(Customizer.withDefaults()));
+
 
     return http
         .cors(Customizer.withDefaults())
@@ -52,7 +51,7 @@ public class SecurityConfig {
             .requestMatchers("/sign-up").permitAll()
             .requestMatchers("/logout").permitAll()
             .requestMatchers("/weather-image").authenticated()
-            .anyRequest().authenticated()
+            .anyRequest().permitAll()
         )
         .logout(logout -> logout.disable())
         // JWT 필터 등록
@@ -64,7 +63,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("https://today-clothes.shop", "https://www.today-clothes.shop"));
+    configuration.setAllowedOrigins(Arrays.asList("https://weather-clothes.store", "https://www.weather-clothes.store"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setAllowCredentials(true);
