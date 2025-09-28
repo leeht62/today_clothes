@@ -37,7 +37,7 @@ public class SecurityConfig {
     return http
         .cors(Customizer.withDefaults())
         // REST API이므로 basic auth 및 csrf 보안을 사용하지 않음
-        .httpBasic(Customizer.withDefaults())
+        .httpBasic(basic -> basic.disable())
         .csrf(csrf -> csrf.disable())
 
         // JWT를 사용하기 때문에 세션을 사용하지 않음
