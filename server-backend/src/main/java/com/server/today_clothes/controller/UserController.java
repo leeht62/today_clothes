@@ -32,13 +32,13 @@ public class UserController {
   }
   @PostMapping("/sign-in")
   public JwtToken signIn(@RequestBody UserDto userDto) {
-    String usercode = userDto.getUserCode();
+    String name = userDto.getName();
     String password = userDto.getPassword();
-    JwtToken jwtToken = userService.signIn(usercode, password);
-    UserDto userdto = userService.findByUserCode(usercode);
+    JwtToken jwtToken = userService.signIn(name, password);
+    UserDto userdto = userService.findByUserName(name);
     jwtToken.setUser(userdto);
 
-    log.info("request username = {}, password = {}", usercode, password);
+    log.info("request username = {}, password = {}", name, password);
     log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
     return jwtToken;
   }

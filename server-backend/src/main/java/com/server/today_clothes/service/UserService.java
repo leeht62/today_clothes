@@ -30,13 +30,9 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
-  public JwtToken signIn(String username, String password) {
-    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-    // 1. username + password 를 기반으로 Authentication 객체 생성
-    // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
+  public JwtToken signIn(String userCode, String password) {
     UsernamePasswordAuthenticationToken authenticationToken =
-        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        new UsernamePasswordAuthenticationToken(userCode, password);
     JwtToken jwtToken = jwtTokenProvider.generateToken(authenticationToken);
 
     return jwtToken;
@@ -68,6 +64,11 @@ public class UserService {
   public UserDto findByUserCode(String users){
     User user = userMapper.findByUserCode(users)
         .orElseThrow(() -> new UsernameNotFoundException("User not found: " + users));
+    UserDto userDto=new UserDto(user);
+    return userDto;
+  }
+  public UserDto findByUserName(String users){
+    User user = userMapper.findByUserName(users);
     UserDto userDto=new UserDto(user);
     return userDto;
   }
