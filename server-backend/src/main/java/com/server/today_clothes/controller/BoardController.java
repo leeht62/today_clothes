@@ -6,6 +6,7 @@ import com.server.today_clothes.mapper.UserMapper;
 import com.server.today_clothes.service.BoardService;
 import com.server.today_clothes.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/boards")
 @RequiredArgsConstructor
@@ -23,7 +25,9 @@ public class BoardController {
   //모든 Board 조회
   @GetMapping("/getBoard")
   public ResponseEntity<List<BoardDto>> getBoard(){
-      return ResponseEntity.ok(boardService.findAllBoard());
+    log.info("Board성공");
+    System.out.println("Board성공");
+  return ResponseEntity.ok(boardService.findAllBoard());
   }
   //Board 1개씩 조회
   @GetMapping("/{boardId}/read")
