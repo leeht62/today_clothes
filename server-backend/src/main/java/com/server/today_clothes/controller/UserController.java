@@ -33,9 +33,11 @@ public class UserController {
   }
   @PostMapping("/sign-in")
   public JwtToken signIn(@RequestBody UserDto userDto) {
+    log.info("로그인한 userDto = {}",userDto);
     UserDto userFromDb = userService.findByUserCode(userDto.getUserCode());
+    log.info("로그인한 userFromDb = {}",userFromDb);
     String username = userFromDb.getUsername();
-    log.info("로그인한 username = {}",username);// null 아님
+    log.info("로그인한 username = {}",username);
     JwtToken jwtToken = userService.signIn(username);
 
     jwtToken.setUser(userFromDb);
