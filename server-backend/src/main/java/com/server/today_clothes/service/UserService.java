@@ -33,7 +33,11 @@ public class UserService {
   public JwtToken signIn(String userCode, String password) {
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(userCode, password);
-    JwtToken jwtToken = jwtTokenProvider.generateToken(authenticationToken);
+
+    // 2. AuthenticationManager를 통해 인증 수행 (UserDetailsService 호출됨)
+    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+    JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
 
     return jwtToken;
   }
