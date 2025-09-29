@@ -7,18 +7,18 @@ export default ({ mode }) => {
 
   const serverConfig = {
     host: '0.0.0.0',
-    port: 3000
+    port: 80,
+    port: 443
   };
 
   // 개발 모드에서만 proxy 설정 추가
-  if (mode === 'development') {
     serverConfig.proxy = {
       '/api': {
-        target: 'https://weather-clothes.store',
+        target: 'https://today-clothes.shop',
         changeOrigin: true,
       }
     };
-  }
+  
 
   return defineConfig({
     plugins: [react()],
