@@ -15,8 +15,8 @@ public class CustomUserDetailsService implements UserDetailsService {
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
 
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return userMapper.findByUserCode(username)
+  public UserDetails loadUserByUsername(String usercode) throws UsernameNotFoundException {
+    return userMapper.findByUserCode(usercode)
         .map(this::createUserDetails)
         .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다."));
   }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,18 +24,20 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserService {
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
+  private final CustomUserDetailsService customUserDetailsService;
   private final JwtTokenProvider jwtTokenProvider;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
   public JwtToken signIn(String username, String password) {
+    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
     // 1. username + password 를 기반으로 Authentication 객체 생성
     // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
-    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+    UsernamePasswordAuthenticationToken authenticationToken =
+        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     // 3. 인증 정보를 기반으로 JWT 토큰 생성
-    JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+    JwtToken jwtToken = jwtTokenProvider.generateToken(authenticationToken);
 
     return jwtToken;
   }
