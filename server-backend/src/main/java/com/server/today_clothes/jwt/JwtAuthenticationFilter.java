@@ -35,13 +35,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     HttpServletResponse httpResponse = (HttpServletResponse) response;
     String path = httpRequest.getRequestURI();
-    System.out.println("Request URI: " + path);
+    System.out.println("[JwtAuthenticationFilter] 진입: " + path);
     // 1. permitAll 경로면 필터 건너뛰기
     if (PERMIT_ALL_URLS.stream().anyMatch(path::startsWith)) {
+      System.out.println("[JwtAuthenticationFilter] PERMIT_ALL 경로, 필터 건너뜀: " + path);
       chain.doFilter(request, response);
+
       return;
     }
-
+    System.out.println("[JwtAuthenticationFilter] 필터 적용 경로: " + path);
     // 2. Request Header에서 JWT 토큰 추출
     String token = resolveToken(httpRequest);
 
