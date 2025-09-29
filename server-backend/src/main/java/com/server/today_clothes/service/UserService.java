@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,12 +32,11 @@ public class UserService {
 
   @Transactional
   public JwtToken signIn(String userCode, String password) {
-    UsernamePasswordAuthenticationToken authenticationToken =
-        new UsernamePasswordAuthenticationToken(userCode, password);
+    UserDetails userDetails = customUserDetailsService.loadUserByUsername(userCode);
 
     // 2. AuthenticationManager를 통해 인증 수행 (UserDetailsService 호출됨)
-    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
+    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(authentication);
     JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
 
     return jwtToken;
