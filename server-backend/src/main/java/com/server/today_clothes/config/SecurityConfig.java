@@ -66,7 +66,8 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     // 와일드카드 대신 명시적인 도메인 주소를 사용
-    configuration.setAllowedOrigins(Arrays.asList("https://today-clothes.shop", "http://today-clothes.shop"));
+    configuration.setAllowedOrigins(Arrays.asList("https://today-clothes.shop", "http://today-clothes.shop"
+        , "http://www.today-clothes.shop", "https://www.today-clothes.shop"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setAllowCredentials(true);
