@@ -28,7 +28,7 @@ public class BoardService {
   private final MessageService messageService;
 
   public BoardDto saveBoard(BoardDto boardDto,String username){
-    User user=userMapper.findByUserName(username);
+    User user=userMapper.findByUserName(username).orElseThrow();
     Board board=new Board(boardDto);
     board.setUser(user);
     boardMapper.save(board);

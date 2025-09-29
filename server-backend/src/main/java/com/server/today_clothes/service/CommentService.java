@@ -68,7 +68,7 @@ public class CommentService {
   }
 
   public CommentDto commentBoard(CommentDto commentDto, String userName, Long boardId) {
-    User user = userMapper.findByUserName(userName);
+    User user = userMapper.findByUserName(userName).orElseThrow();
     commentDto.setUser(user);
     Board board = boardMapper.findById(boardId);
     commentDto.setBoard(board);

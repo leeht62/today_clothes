@@ -19,7 +19,7 @@ public class WeatherService {
 
   public WeatherDto saveWeather(Weather weather,String userName){
     // userCode로 DB에서 사용자 조회
-    User user = userMapper.findByUserName(userName);
+    User user = userMapper.findByUserName(userName).orElseThrow();
     weather.setUserId(user.getId());
     weatherMapper.save(weather);
     WeatherDto weatherDto=new WeatherDto(weather);
@@ -38,7 +38,7 @@ public class WeatherService {
   }
 
   public List<WeatherDto> findAllWeather(String username){
-    User user=userMapper.findByUserName(username);
+    User user=userMapper.findByUserName(username).orElseThrow();
     List<Weather> weathers=weatherMapper.findAll(user.getId());
     List<WeatherDto> WeatherDtos=new ArrayList<>();
     for(Weather weather : weathers){

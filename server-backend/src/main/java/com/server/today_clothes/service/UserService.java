@@ -31,8 +31,8 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
-  public JwtToken signIn(String userCode, String password) {
-    UserDetails userDetails = customUserDetailsService.loadUserByUsername(userCode);
+  public JwtToken signIn(String username) {
+    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
     // 2. AuthenticationManager를 통해 인증 수행 (UserDetailsService 호출됨)
     Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -72,7 +72,7 @@ public class UserService {
     return userDto;
   }
   public UserDto findByUserName(String users){
-    User user = userMapper.findByUserName(users);
+    User user = userMapper.findByUserName(users).orElseThrow();
     UserDto userDto=new UserDto(user);
     return userDto;
   }
