@@ -38,6 +38,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     log.info("[SecurityConfig] SecurityFilterChain Bean 생성됨");
+    System.out.println("[SecurityConfig] SecurityFilterChain Bean 생성됨");
 
     return http
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
