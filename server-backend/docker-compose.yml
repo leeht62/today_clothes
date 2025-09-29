@@ -11,6 +11,9 @@ services:
       my-cache-server:
         condition: service_healthy
     environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-db:5432/clothes
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
       - SPRING_DATA_REDIS_HOST=my-cache-server
       - SPRING_DATA_REDIS_PORT=6379
       - SERVER_SSL_ENABLED=false

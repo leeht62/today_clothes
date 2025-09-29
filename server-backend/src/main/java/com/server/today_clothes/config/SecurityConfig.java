@@ -41,7 +41,7 @@ public class SecurityConfig {
     System.out.println("[SecurityConfig] SecurityFilterChain Bean 생성됨");
 
     return http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(Customizer.withDefaults())
         // REST API이므로 basic auth 및 csrf 보안을 사용하지 않음
         .httpBasic(basic -> basic.disable())
         .csrf(csrf -> csrf.disable())
@@ -66,20 +66,6 @@ public class SecurityConfig {
         .build();
   }
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    // 와일드카드 대신 명시적인 도메인 주소를 사용
-    configuration.setAllowedOrigins(Arrays.asList("https://today-clothes.shop", "http://today-clothes.shop"
-        , "http://www.today-clothes.shop", "https://www.today-clothes.shop","http://localhost:8080"
-      ,"http://localhost:3000"));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(Arrays.asList("*"));
-    configuration.setAllowCredentials(true);
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
   @Bean
   public PasswordEncoder passwordEncoder() {
     // BCrypt Encoder 사용

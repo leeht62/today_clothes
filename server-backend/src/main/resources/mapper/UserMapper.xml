@@ -20,12 +20,12 @@
         FROM users
         WHERE id = #{id}
     </select>
-    <select id="findByUserCode" resultType="com.server.today_clothes.VO.User" parameterType="String">
+    <select id="findByUserCode" resultMap="UserResultMap" parameterType="String">
         SELECT id, user_code, password, user_name,role
         FROM users
         WHERE user_code = #{userCode}
     </select>
-    <select id="findByUserName" resultType="com.server.today_clothes.VO.User" parameterType="String">
+    <select id="findByUserName" resultMap="UserResultMap" parameterType="String">
         SELECT id, user_code, password, user_name,role
         FROM users
         WHERE user_name = #{userName}

@@ -6,6 +6,7 @@ import com.server.today_clothes.jwt.JwtToken;
 import com.server.today_clothes.jwt.JwtTokenProvider;
 import com.server.today_clothes.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
@@ -32,12 +34,15 @@ public class UserService {
 
   @Transactional
   public JwtToken signIn(String username) {
+    log.info("Jwt username1 = {}", username);
     UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-
+    log.info("Jwt userDetails= {}", userDetails);
     // 2. AuthenticationManager를 통해 인증 수행 (UserDetailsService 호출됨)
     Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    log.info("Jwt authentication= {}", authentication);
     SecurityContextHolder.getContext().setAuthentication(authentication);
     JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+    log.info("Jwt token123= {}", jwtToken);
 
     return jwtToken;
   }
@@ -66,8 +71,9 @@ public class UserService {
     return userDto;
   }
   public UserDto findByUserCode(String users){
-    User user = userMapper.findByUserCode(users)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + users));
+    log.info("User from mapper = {}", users);
+    User user = userMapper.findByUserCode(users);
+    log.info("findByUserCode의 user = {},{}",user.getUserCode(),user.getUsername());
     UserDto userDto=new UserDto(user);
     return userDto;
   }
@@ -88,8 +94,8 @@ public class UserService {
   }
 
   private void Duplicate(User user){
-    Optional<User> existingMember = userMapper.findByUserCode(user.getUserCode());
-    if(existingMember.isPresent()){
+    User existingMember = userMapper.findByUserCode(user.getUserCode());
+    if(existingMember!=null){
       throw new IllegalStateException("이미 가입된 회원입니다.");
     }
   }
