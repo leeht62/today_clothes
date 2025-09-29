@@ -52,8 +52,6 @@ public class SecurityConfig {
             .requestMatchers("/sign-in").permitAll()
             .requestMatchers("/sign-up").permitAll()
             .requestMatchers("/logout").permitAll()
-            .requestMatchers("/ws/**").permitAll()
-            .requestMatchers("/*.html", "/*.js", "/*.css").permitAll()
             .requestMatchers("/weather-image").authenticated()
             .anyRequest().permitAll()
         )
