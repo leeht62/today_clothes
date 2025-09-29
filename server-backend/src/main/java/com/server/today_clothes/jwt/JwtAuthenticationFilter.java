@@ -27,21 +27,18 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     String path = httpRequest.getRequestURI();
-    // 1. Request Header에서 JWT 토큰 추출
-    for (String allowed : permitAllUrls) {
-      if (path.equals(allowed)) { // 정확히 일치하는 경우만
-        chain.doFilter(request, response);
-        return;
-      }
-      // 만약 /api/** 같은 하위 경로까지 포함하려면 startsWith 사용
-      // if (path.startsWith(allowed)) { ... }
+
+    // 1. 허용된 경로인지 먼저 확인하고, 해당하면 필터 체인을 계속 진행 후 즉시 반환
+    if (permitAllUrls.contains(path)) {
+      chain.doFilter(request, response);
+      return;
     }
 
-
+    // 2. 허용된 경로가 아닐 경우에만 JWT 토큰 검증 로직 실행
     String token = resolveToken((HttpServletRequest) request);
     HttpServletResponse res = (HttpServletResponse) response;
 
-    // 2. validateToken으로 토큰 유효성 검사
+    // 3. validateToken으로 토큰 유효성 검사
     if (token != null && jwtTokenProvider.validateToken(token)) {
       String isLogout = (String) redisTemplate.opsForValue().get("logout:" + token);
       if (isLogout != null) {
@@ -54,6 +51,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
       Authentication authentication = jwtTokenProvider.getAuthentication(token);
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }
+
+    // 4. 다음 필터로 진행
     chain.doFilter(request, response);
   }
 
@@ -65,5 +64,4 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
     return null;
   }
-
 }
