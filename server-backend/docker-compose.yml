@@ -59,7 +59,7 @@ services:
       retries: 10
   frontend-builder:
     build:
-      context: ../server-frontend
+      context: ./
       dockerfile: Dockerfile
     container_name: react-builder
     volumes:
