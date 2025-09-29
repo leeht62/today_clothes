@@ -17,16 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   public UserDetails loadUserByUsername(String usercode) throws UsernameNotFoundException {
     return userMapper.findByUserCode(usercode)
-        .map(this::createUserDetails)
         .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다."));
   }
 
-  // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 return
-  private UserDetails createUserDetails(com.server.today_clothes.VO.User user) {
-    return User.builder()
-        .username(user.getUserCode())
-        .password(user.getPassword())
-        .authorities(user.getRole())
-        .build();
-  }
 }
