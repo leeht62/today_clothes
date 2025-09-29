@@ -57,19 +57,6 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       retries: 10
-  nginx:
-    image: nginx:1.24.0
-    container_name: nginx-server
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ../server-frontend/dist:/usr/share/nginx/html:ro
-      - /etc/nginx/conf.d:/etc/nginx/conf.d
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-    depends_on:
-      - spring-server
-    restart: always
 
 
 volumes:
