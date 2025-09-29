@@ -6,6 +6,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
   private final JwtTokenProvider jwtTokenProvider;
@@ -24,6 +26,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     // 1. Request Header에서 JWT 토큰 추출
     String token = resolveToken((HttpServletRequest) request);
+
+    log.info("JWT 토큰 호출 = {}",token);
 
     // 2. validateToken으로 토큰 유효성 검사
     if (token != null && jwtTokenProvider.validateToken(token)) {

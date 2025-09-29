@@ -3,6 +3,7 @@ package com.server.today_clothes.config;
 import com.server.today_clothes.jwt.JwtAuthenticationFilter;
 import com.server.today_clothes.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,6 +27,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
   private final JwtTokenProvider jwtTokenProvider;
   private final RedisTemplate<String, Object> redisTemplate;
@@ -35,6 +37,7 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    log.info("[SecurityConfig] SecurityFilterChain Bean 생성됨");
 
     return http
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
