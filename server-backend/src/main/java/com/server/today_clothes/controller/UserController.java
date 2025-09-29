@@ -2,6 +2,7 @@ package com.server.today_clothes.controller;
 
 
 import com.server.today_clothes.dto.UserDto;
+import com.server.today_clothes.dto.UserLoginDto;
 import com.server.today_clothes.jwt.JwtLogout;
 import com.server.today_clothes.jwt.JwtToken;
 import com.server.today_clothes.service.UserService;
@@ -31,7 +32,7 @@ public class UserController {
     }
   }
   @PostMapping("/sign-in")
-  public JwtToken signIn(@RequestBody UserDto userDto) {
+  public JwtToken signIn(@RequestBody UserLoginDto userDto) {
     String userCode = userDto.getUserCode();
     String password = userDto.getPassword();
     JwtToken jwtToken = userService.signIn(userCode, password);
