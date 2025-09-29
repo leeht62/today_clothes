@@ -51,7 +51,7 @@ public class SecurityConfig {
             .requestMatchers("/sign-up").permitAll()
             .requestMatchers("/logout").permitAll()
             .requestMatchers("/weather-image").authenticated()
-            .anyRequest().permitAll()
+            .anyRequest().authenticated()
         )
         .logout(logout -> logout.disable())
         // JWT 필터 등록
