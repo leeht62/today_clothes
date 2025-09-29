@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
   // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 return
   private UserDetails createUserDetails(com.server.today_clothes.VO.User user) {
     return User.builder()
-        .username(user.getUsername())
+        .username(user.getUserCode())
         .password(user.getPassword())
         .authorities(user.getRole())
         .build();
