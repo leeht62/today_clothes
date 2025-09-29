@@ -63,12 +63,12 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("https://today-clothes.shop","http://today-clothes.shop"));
+    configuration.setAllowedOrigins(Arrays.asList("https://today-clothes.shop", "http://today-clothes.shop"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setAllowCredentials(true);
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정 적용
+    source.registerCorsConfiguration("/**", configuration);
     return source;
   }
   @Bean
