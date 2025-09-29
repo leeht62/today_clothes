@@ -5,8 +5,8 @@ import { useAuth } from '../contexts/AuthContext'
 const Register = () => {
   const [formData, setFormData] = useState({
     userCode: '',
+    username: '',       // 변경
     password: '',
-    name: '',           
     confirmPassword: ''
   })
   const [error, setError] = useState('')
@@ -40,7 +40,7 @@ const Register = () => {
 
     const result = await register({
       userCode: formData.userCode,
-      name: formData.name,
+      username: formData.username,  // 변경
       password: formData.password
     })
     
@@ -87,18 +87,18 @@ const Register = () => {
                 onChange={handleChange}
               />
             </div>
-             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                 닉네임
               </label>
               <input
-                id="name"
-                name="name"
+                id="username"
+                name="username"        // 변경
                 type="text"
                 required
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="닉네임"
-                value={formData.name}
+                value={formData.username} // 변경
                 onChange={handleChange}
               />
             </div>
@@ -156,4 +156,3 @@ const Register = () => {
 }
 
 export default Register
-

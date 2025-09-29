@@ -1,6 +1,7 @@
 package com.server.today_clothes.VO;
 
 import com.server.today_clothes.dto.UserDto;
+import com.server.today_clothes.dto.UserLoginDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,10 +37,6 @@ public class User implements UserDetails{
     return List.of(new SimpleGrantedAuthority(role));
   }
 
-  @Override
-  public String getUsername() {
-    return this.userCode;
-  }
 
   @Override
   public boolean isAccountNonExpired() {
@@ -66,5 +63,10 @@ public class User implements UserDetails{
     this.userCode=userDto.getUserCode();
     this.password=userDto.getPassword();
     this.role = "ROLE_USER";
+  }
+
+  public User(UserLoginDto userDto){
+    this.userCode=userDto.getUserCode();
+    this.password=userDto.getPassword();
   }
 }
