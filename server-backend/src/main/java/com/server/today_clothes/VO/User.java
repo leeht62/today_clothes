@@ -26,6 +26,8 @@ public class User implements UserDetails{
 
   private String password;
 
+  private String role;
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -56,5 +58,6 @@ public class User implements UserDetails{
     this.username=userDto.getName();
     this.userCode=userDto.getUserCode();
     this.password=userDto.getPassword();
+    this.role = "ROLE_USER";
   }
 }

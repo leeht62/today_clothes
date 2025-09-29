@@ -7,39 +7,41 @@
         <result property="userCode" column="user_code"/>
         <result property="password" column="password"/>
         <result property="username" column="user_name"/>
+        <result property="role" column="role"/>
     </resultMap>
 
     <select id="findAll" resultType="com.server.today_clothes.VO.User">
-        SELECT id, user_code, password, user_name
+        SELECT id, user_code, password, user_name,role
         FROM users
 
     </select>
     <select id="findById" resultType="com.server.today_clothes.VO.User" parameterType="long">
-        SELECT id, user_code, password, user_name
+        SELECT id, user_code, password, user_name,role
         FROM users
         WHERE id = #{id}
     </select>
     <select id="findByUserCode" resultType="com.server.today_clothes.VO.User" parameterType="String">
-        SELECT id, user_code, password, user_name
+        SELECT id, user_code, password, user_name,role
         FROM users
         WHERE user_code = #{userCode}
     </select>
     <select id="findByUserName" resultType="com.server.today_clothes.VO.User" parameterType="String">
-        SELECT id, user_code, password, user_name
+        SELECT id, user_code, password, user_name,role
         FROM users
         WHERE user_name = #{userName}
     </select>
     <insert id="save" parameterType="com.server.today_clothes.VO.User"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO users (user_code, password, user_name)
-        VALUES (#{userCode}, #{password}, #{username})
+        INSERT INTO users (user_code, password, user_name,role)
+        VALUES (#{userCode}, #{password}, #{username},#{role})
     </insert>
     <update id="update" parameterType="com.server.today_clothes.VO.User">
         UPDATE users
         SET
             user_code = #{userCode},
             password = #{password},
-            user_name = #{username}
+            user_name = #{username},
+            role=#{role}
         WHERE id = #{id}
     </update>
     <delete id="deleteById" parameterType="long">

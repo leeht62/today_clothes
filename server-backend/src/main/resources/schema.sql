@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     user_code VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    user_name VARCHAR(100)
+    user_name VARCHAR(100),
+    role VARCHAR(50)
 );
 CREATE TABLE IF NOT EXISTS boards(
     id SERIAL PRIMARY KEY,
