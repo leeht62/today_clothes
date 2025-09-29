@@ -14,7 +14,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.addEndpoint("/ws") // 클라이언트 연결 URL
         .setAllowedOrigins("https://today-clothes.shop", "http://today-clothes.shop",
-            "http://www.today-clothes.shop", "https://www.today-clothes.shop")
+            "http://www.today-clothes.shop", "https://www.today-clothes.shop","http://localhost:8080")
         .withSockJS();
   }
 
