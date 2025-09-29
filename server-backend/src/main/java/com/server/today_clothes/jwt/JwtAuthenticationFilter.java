@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     HttpServletResponse httpResponse = (HttpServletResponse) response;
     String path = httpRequest.getRequestURI();
-
+    System.out.println("Request URI: " + path);
     // 1. permitAll 경로면 필터 건너뛰기
     if (PERMIT_ALL_URLS.stream().anyMatch(path::startsWith)) {
       chain.doFilter(request, response);
