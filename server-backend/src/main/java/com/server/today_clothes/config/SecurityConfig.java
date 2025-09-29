@@ -30,9 +30,21 @@ public class SecurityConfig {
   private final JwtTokenProvider jwtTokenProvider;
   private final RedisTemplate<String, Object> redisTemplate;
 
+  private static final List<String> PERMIT_ALL_URLS = Arrays.asList(
+      "/sign-in",
+      "/sign-up",
+      "/logout"
+  );
+
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+    JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(
+        jwtTokenProvider,
+        redisTemplate,
+        PERMIT_ALL_URLS
+    );
 
     return http
         .cors(Customizer.withDefaults())
@@ -47,15 +59,12 @@ public class SecurityConfig {
         // 요청에 대한 권한 설정
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers("/sign-in").permitAll()
-            .requestMatchers("/sign-up").permitAll()
-            .requestMatchers("/logout").permitAll()
             .requestMatchers("/weather-image").authenticated()
-            .anyRequest().authenticated()
+            .anyRequest().permitAll()
         )
         .logout(logout -> logout.disable())
         // JWT 필터 등록
-        .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,redisTemplate), UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
         .build();
   }

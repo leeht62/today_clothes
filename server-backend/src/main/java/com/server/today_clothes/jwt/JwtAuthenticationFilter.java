@@ -14,16 +14,30 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
   private final JwtTokenProvider jwtTokenProvider;
   private final RedisTemplate<String, Object> redisTemplate;
+  private final List<String> permitAllUrls;
 
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    HttpServletRequest httpRequest = (HttpServletRequest) request;
+    String path = httpRequest.getRequestURI();
     // 1. Request Header에서 JWT 토큰 추출
+    for (String allowed : permitAllUrls) {
+      if (path.equals(allowed)) { // 정확히 일치하는 경우만
+        chain.doFilter(request, response);
+        return;
+      }
+      // 만약 /api/** 같은 하위 경로까지 포함하려면 startsWith 사용
+      // if (path.startsWith(allowed)) { ... }
+    }
+
+
     String token = resolveToken((HttpServletRequest) request);
     HttpServletResponse res = (HttpServletResponse) response;
 
