@@ -59,7 +59,7 @@ public class User implements UserDetails{
   }
 
   public User(UserDto userDto){
-    this.username=userDto.getName();
+    this.username=userDto.getUsername();
     this.userCode=userDto.getUserCode();
     this.password=userDto.getPassword();
     this.role = "ROLE_USER";
