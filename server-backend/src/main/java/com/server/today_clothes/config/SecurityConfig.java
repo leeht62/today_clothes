@@ -37,7 +37,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     return http
-        .cors(Customizer.withDefaults())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         // REST API이므로 basic auth 및 csrf 보안을 사용하지 않음
         .httpBasic(basic -> basic.disable())
         .csrf(csrf -> csrf.disable())
