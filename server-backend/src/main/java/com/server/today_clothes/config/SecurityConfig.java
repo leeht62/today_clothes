@@ -55,7 +55,7 @@ public class SecurityConfig {
             .requestMatchers("/ws/**").permitAll()
             .requestMatchers("/*.html", "/*.js", "/*.css").permitAll()
             .requestMatchers("/weather-image").authenticated()
-            .anyRequest().authenticated()
+            .anyRequest().permitAll()
         )
         .logout(logout -> logout.disable())
         // JWT 필터 등록
