@@ -27,7 +27,7 @@ public class BoardController {
   }
   //Board 1개씩 조회
   @GetMapping("/{boardId}/read")
-  
+
   public ResponseEntity<BoardDto> ReadBoard(@PathVariable Long boardId){
     return ResponseEntity.ok(boardService.findBoard(boardId));
   }
