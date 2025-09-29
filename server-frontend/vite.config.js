@@ -1,30 +1,20 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
-export default ({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-
-  const serverConfig = {
-    host: '0.0.0.0',
-    port: 80,
-    port: 443
-  };
-
-  // 개발 모드에서만 proxy 설정 추가
-    serverConfig.proxy = {
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 3000,
+    proxy: {
       '/api': {
-        target: 'https://today-clothes.shop',
+        target: 'http://localhost:8080',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
-    };
-  
-
-  return defineConfig({
-    plugins: [react()],
-    server: serverConfig,
-    build: {
-      outDir: 'dist'
     }
-  });
-}
+  }
+  ,define: {
+    global: 'window' 
+  }
+})
