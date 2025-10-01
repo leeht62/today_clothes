@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { boardAPI, weatherAPI, commentAPI } from '../lib/api'
 import useWebSocket from '../hooks/WebSocket';
 import { useAuth } from '../contexts/AuthContext';
-
+//
 const PostDetail = () => {
   const { id } = useParams()
   const { user } = useAuth();
