@@ -14,6 +14,7 @@ const PostDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [toasts, setToasts] = useState([]);
+  const navigate = useNavigate();
 
   const notifications = useWebSocket(user?.token);
 
@@ -96,7 +97,7 @@ const PostDetail = () => {
   const handlePostDelete = async (postId) => {
     try {
       await boardAPI.deleteBoard(postId)
-      setPost((prev) => prev.filter((c) => c.id !== postId))
+      navigate("/posts")
     } catch (err) {
       console.error('게시글 삭제 실패:', err)
       setError('게시글 삭제에 실패했습니다.')
