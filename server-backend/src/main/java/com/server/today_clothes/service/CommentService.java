@@ -80,12 +80,12 @@ public class CommentService {
     MessageDto event = new MessageDto(
         "COMMENT",
         "회원 " + commentDto.getUser().getUserCode() + "님이 댓글을 남겼습니다: " + comment.getComment(),
-        userName,
+        board.getUser().getUsername(),
         board.getId()
     );
 
     // 4. Redis Pub/Sub으로 알림 발송
-    messageService.publishNotification(userName, event);
+    messageService.publishNotification(board.getUser().getUsername(), event);
 
     // 5. DTO 반환
     return new CommentDto(comment);
