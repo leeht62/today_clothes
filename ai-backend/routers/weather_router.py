@@ -8,7 +8,7 @@ from services.image_service import generate_image_from_prompt, SimpleInput  # �
 router = APIRouter()
 
 SERVICE_KEY = os.getenv("SERVICE_KEY")
-API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst"
+API_URL = "https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst"
 
 def get_current_date_string():
     current_date = datetime.now().date()
@@ -34,7 +34,7 @@ def get_current_hour_string():
 
 def fetch_ultra_short_weather():
     params = {
-        'serviceKey': SERVICE_KEY,
+        'authKey': SERVICE_KEY,
         'pageNo': '1',
         'numOfRows': '1000',
         'dataType': 'XML',
@@ -47,6 +47,7 @@ def fetch_ultra_short_weather():
         res = requests.get(API_URL, params=params, timeout=10, verify=False)
         res.raise_for_status()
         xml_data = res.text
+        print(xml_data)
         dict_data = xmltodict.parse(xml_data)
         return dict_data
     except Exception as e:
@@ -66,16 +67,16 @@ def make_weather_prompt():
         for item in items:
             # 기온
             if item['category'] == 'T1H':
-                weather_data['tmp'] = item['fcstValue']
+                weather_data['tmp'] = item['obsrValue']
             # 습도
             if item['category'] == 'REH':
-                weather_data['hum'] = item['fcstValue']
+                weather_data['hum'] = item['obsrValue']
             # 하늘상태
             if item['category'] == 'SKY':
-                weather_data['sky'] = item['fcstValue']
+                weather_data['sky'] = item['obsrValue']
             # 강수형태
             if item['category'] == 'PTY':
-                weather_data['sky2'] = item['fcstValue']
+                weather_data['sky2'] = item['obsrValue']
 
         # 프롬프트 생성
         str_sky = "서울 "
