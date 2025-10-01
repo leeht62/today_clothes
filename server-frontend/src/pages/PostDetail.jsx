@@ -92,6 +92,16 @@ const PostDetail = () => {
       setError('댓글 삭제에 실패했습니다.')
     }
   }
+  //게시글 삭제
+  const handlePostDelete = async (postId) => {
+    try {
+      await boardAPI.deleteBoard(postId)
+      setPost((prev) => prev.filter((c) => c.id !== postId))
+    } catch (err) {
+      console.error('게시글 삭제 실패:', err)
+      setError('게시글 삭제에 실패했습니다.')
+    }
+  }
 
   // Base64 이미지 src 변환
   const getBase64ImageSrc = (base64) => `data:image/png;base64,${base64}`
@@ -120,6 +130,12 @@ const PostDetail = () => {
         {weatherData.weather_prompt && (
           <p className="text-sm text-gray-500">{weatherData.weather_prompt}</p>
         )}
+        <button
+          onClick={() => handlePostDelete(post.id)}
+          className="text-red-500 hover:text-red-700 text-sm mt-4"
+        >
+          게시글 삭제
+        </button>
       </div>
     )}
 
