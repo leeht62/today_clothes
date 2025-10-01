@@ -23,7 +23,7 @@ public class BoardController {
   private final BoardService boardService;
   private final UserMapper userMapper;
   //모든 Board 조회
-  @GetMapping()
+  @GetMapping("/getBoard")
   public ResponseEntity<List<BoardDto>> getBoard(){
     log.info("Board성공");
     System.out.println("Board성공");
