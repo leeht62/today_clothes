@@ -114,6 +114,13 @@ const PostDetail = () => {
     <div className="bg-white p-6 rounded-lg shadow">
       <h1 className="text-2xl font-bold">{post.title}</h1>
       <p className="text-gray-600">{post.content}</p>
+
+       <button
+          onClick={() => handlePostDelete(post.id)}
+          className="text-red-500 hover:text-red-700 text-sm mt-4"
+        >
+          게시글 삭제
+       </button>
     </div>
 
     {/* 생성된 이미지 */}
@@ -130,12 +137,6 @@ const PostDetail = () => {
         {weatherData.weather_prompt && (
           <p className="text-sm text-gray-500">{weatherData.weather_prompt}</p>
         )}
-        <button
-          onClick={() => handlePostDelete(post.id)}
-          className="text-red-500 hover:text-red-700 text-sm mt-4"
-        >
-          게시글 삭제
-        </button>
       </div>
     )}
 
