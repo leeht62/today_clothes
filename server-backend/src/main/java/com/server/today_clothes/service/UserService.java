@@ -35,16 +35,15 @@ public class UserService {
 
   @Transactional
   public JwtToken signIn(String username,String password) {
-    UsernamePasswordAuthenticationToken authenticationToken =
-        new UsernamePasswordAuthenticationToken(username, password);
-    try {
-      Authentication authentication = authenticationManagerBuilder.getObject()
-          .authenticate(authenticationToken);
-      JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-      return jwtToken;
-    } catch (BadCredentialsException e) {
+    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+    // 2. AuthenticationManager를 통해 인증 수행 (UserDetailsService 호출됨)
+    if (!passwordEncoder.matches(password, userDetails.getPassword())) {
       throw new BadCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
+    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+    return jwtToken;
   }
 
 
