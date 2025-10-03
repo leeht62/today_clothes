@@ -97,7 +97,11 @@ public class UserService {
   private void Duplicate(User user){
     Optional<User> existingMember = userMapper.findByUserCode(user.getUserCode());
     if(existingMember.isPresent()){
-      throw new IllegalStateException("이미 가입된 회원입니다.");
+      throw new IllegalStateException("이미 가입된 회원입니다. 같은 아이디를 사용할수 없습니다.");
+    }
+    Optional<User> existingMemberByName = userMapper.findByUserName(user.getUsername());
+    if(existingMemberByName.isPresent()){
+      throw new IllegalStateException("이미 가입된 회원의 이름입니다.같은 이름을 사용하실수 없습니다.");
     }
   }
 
