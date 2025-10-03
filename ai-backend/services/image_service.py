@@ -21,8 +21,8 @@ async def generate_image_from_prompt(input_data: SimpleInput):
     completion = client.chat.completions.create(
     model="gpt-4o",
     messages=[
-        {"role": "system", "content": "You are an AI fashion stylist. Given a scene or situation, you recommend the most suitable outfit in English, describing the clothing in detail."},
-        {"role": "user", "content": f"Recommend a detailed outfit for the following scene or situation. Only return the English outfit description. Scene: {input_data.prompt}"}
+        {"role": "system", "content": "당신은 AI 패션 스타일리스트입니다. 사용자가 제시한 장면이나 상황에 맞는 가장 적합한 의상을 한국어로 상세하게 설명해 주세요."},
+        {"role": "user", "content": f"다음 장면이나 상황에 어울리는 의상을 한국어로만 상세하게 추천해줘. 장면: {input_data.prompt}"}
     ],
     temperature=0.5
     )
