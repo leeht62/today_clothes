@@ -21,17 +21,12 @@ async def generate_image_from_prompt(input_data: SimpleInput):
     completion = client.chat.completions.create(
     model="gpt-4o",
     messages=[
-        {"role": "system", "content": "You are an AI fashion stylist. Respond in two parts: (1) A detailed Korean outfit description. (2) The same outfit description translated into natural English, for image generation."},
-        {"role": "user", "content": f"Scene: {input_data.prompt}"}
+        {"role": "system", "content": "You are an AI fashion stylist. Given a scene or situation, you recommend the most suitable outfit in English, describing the clothing in detail."},
+        {"role": "user", "content": f"Recommend a detailed outfit for the following scene or situation. Only return the English outfit description. Scene: {input_data.prompt}"}
     ],
     temperature=0.5
     )
-
     gpt_answer = completion.choices[0].message.content
-
-    korean_desc, english_desc = gpt_answer.split("영어:")
-    korean_desc = korean_desc.replace("한국어:", "").strip()
-    english_desc = english_desc.strip()
 
     # 2. Stability.ai Stable Diffusion API로 이미지 생성
     response = requests.post(
