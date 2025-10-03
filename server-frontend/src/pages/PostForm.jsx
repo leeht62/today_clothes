@@ -130,11 +130,6 @@ const PostForm = ({ weather, onSubmitSuccess }) => {
           <div className="bg-gray-50 p-4 rounded-md">
             <p className="text-sm text-gray-600 font-medium mb-2">참고한 날씨 정보</p>
             <p className="text-gray-800">{formData.weather_prompt}</p>
-            {formData.gpt_answer && (
-              <p className="mt-2 text-sm text-gray-600">
-                <span className="font-medium">AI 추천 옷차림:</span> {formData.gpt_answer}
-              </p>
-            )}
             {formData.image && (
               <img 
                 src={`data:image/jpeg;base64,${formData.image}`} 
