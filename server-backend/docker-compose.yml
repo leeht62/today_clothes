@@ -32,7 +32,7 @@ services:
       my-cache-server:
         condition: service_healthy
     env_file:
-      - ../spring-server/.env
+      - ../server-backend/.env
 
 
 
