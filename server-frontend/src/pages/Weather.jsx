@@ -103,9 +103,6 @@ const Weather = () => {
                 className="max-w-full h-auto rounded-lg"
               />
             )}
-            {weatherData.gpt_answer && (
-              <p className="text-gray-600">{weatherData.gpt_answer}</p>
-            )}
             {weatherData.weather_prompt && (
               <p className="text-sm text-gray-500">
                 온도: {weatherData.weather_prompt}°C

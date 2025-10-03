@@ -118,7 +118,7 @@ const PostDetail = () => {
 
        <button
           onClick={() => handlePostDelete(post.id)}
-          className="text-red-500 hover:text-red-700 text-sm mt-4"
+          className="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           게시글 삭제
        </button>
