@@ -9,8 +9,8 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-        .allowedOrigins("https://today-clothes.shop") // 프론트 도메인
-        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-        .allowCredentials(false); // JWT 헤더만 사용하면 false
+        .allowedOriginPatterns("https://today-clothes.shop")
+        .allowCredentials(false)
+        .allowedMethods("*");
   }
 }
