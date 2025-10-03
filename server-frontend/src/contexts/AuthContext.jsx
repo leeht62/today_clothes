@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
         setUser({ 
           token,
           userCode: userInfo.userCode,
-          name: userInfo.name
+          username: userInfo.username
         })
       } catch (error) {
         console.error('사용자 정보 파싱 실패:', error)
@@ -50,20 +50,20 @@ export const AuthProvider = ({ children }) => {
       // 사용자 정보도 localStorage에 저장
       localStorage.setItem('userInfo', JSON.stringify({
         userCode: userInfo.userCode,
-        name: userInfo.name
+        username: userInfo.username
       }))
       
       // user 상태에 모든 필요한 정보 포함
       setUser({ 
         token: accessToken,
         userCode: userInfo.userCode,
-        name: userInfo.name
+        username: userInfo.username
       })
       
       console.log('설정된 user:', { 
         token: accessToken,
         userCode: userInfo.userCode,
-        name: userInfo.name
+        username: userInfo.username
       })
       
       return { success: true }

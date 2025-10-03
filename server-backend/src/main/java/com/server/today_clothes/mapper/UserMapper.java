@@ -14,7 +14,7 @@ public interface UserMapper {
   void save(User user);
   void update(User user);
   void deleteById(Long id);
-  User findByUserCode(String userCode);
+  Optional<User> findByUserCode(String userCode);
   Optional<User> findByUserName(String username);
 
 }

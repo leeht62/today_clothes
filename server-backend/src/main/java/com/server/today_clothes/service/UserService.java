@@ -7,6 +7,7 @@ import com.server.today_clothes.jwt.JwtTokenProvider;
 import com.server.today_clothes.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -33,19 +34,19 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
-  public JwtToken signIn(String username) {
-    log.info("Jwt username1 = {}", username);
-    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-    log.info("Jwt userDetails= {}", userDetails);
-    // 2. AuthenticationManager를 통해 인증 수행 (UserDetailsService 호출됨)
-    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    log.info("Jwt authentication= {}", authentication);
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-    JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-    log.info("Jwt token123= {}", jwtToken);
-
-    return jwtToken;
+  public JwtToken signIn(String username,String password) {
+    UsernamePasswordAuthenticationToken authenticationToken =
+        new UsernamePasswordAuthenticationToken(username, password);
+    try {
+      Authentication authentication = authenticationManagerBuilder.getObject()
+          .authenticate(authenticationToken);
+      JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+      return jwtToken;
+    } catch (BadCredentialsException e) {
+      throw new BadCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다.");
+    }
   }
+
 
 
   @Transactional
@@ -72,7 +73,8 @@ public class UserService {
   }
   public UserDto findByUserCode(String users){
     log.info("User from mapper = {}", users);
-    User user = userMapper.findByUserCode(users);
+    User user = userMapper.findByUserCode(users)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + users));
     log.info("findByUserCode의 user = {},{}",user.getUserCode(),user.getUsername());
     UserDto userDto=new UserDto(user);
     return userDto;
@@ -94,8 +96,8 @@ public class UserService {
   }
 
   private void Duplicate(User user){
-    User existingMember = userMapper.findByUserCode(user.getUserCode());
-    if(existingMember!=null){
+    Optional<User> existingMember = userMapper.findByUserCode(user.getUserCode());
+    if(existingMember.isPresent()){
       throw new IllegalStateException("이미 가입된 회원입니다.");
     }
   }
