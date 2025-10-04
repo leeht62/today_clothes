@@ -32,7 +32,7 @@ public class RedisCacheConfig {
             )
         )
         // 데이터의 만료기간(TTL) 설정
-        .entryTtl(Duration.ofMinutes(10L));
+        .entryTtl(Duration.ofMinutes(1L));
     return RedisCacheManager
         .RedisCacheManagerBuilder
         .fromConnectionFactory(redisConnectionFactory)
