@@ -22,7 +22,7 @@ async def generate_image_from_prompt(input_data: SimpleInput):
     model="gpt-4o",
     messages=[
         {"role": "system", "content": "You are an AI fashion stylist. Given a scene or situation, you recommend the most suitable outfit in English, describing the clothing in detail."},
-        {"role": "user", "content": f"Recommend a detailed outfit for the following scene or situation. Only return the English outfit description. Scene: {input_data.prompt}"}
+        {"role": "user", "content": f"Recommend a detailed and trendy hip outfit inspired by urban street style for the following scene or situation. Only return the English outfit description. Scene: {input_data.prompt}"}
     ],
     temperature=0.5
     )
