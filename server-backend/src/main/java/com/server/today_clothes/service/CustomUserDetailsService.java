@@ -25,9 +25,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 return
   private UserDetails createUserDetails(com.server.today_clothes.VO.User user) {
-    // VO.User 객체 대신 새로운 User 객체를 생성
-    return org.springframework.security.core.userdetails.User.builder()
-        .username(user.getUsername()) // 여기서 VO.User의 username 필드가 null이라 문제 발생
+    return User.builder()
+        .username(user.getUsername())
         .password(user.getPassword())
         .authorities(new SimpleGrantedAuthority(user.getRole()))
         .build();

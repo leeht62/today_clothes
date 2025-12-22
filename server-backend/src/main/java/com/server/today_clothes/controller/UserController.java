@@ -37,14 +37,10 @@ public class UserController {
     try {
       UserDto userFromDb = userService.findByUserCode(userDto.getUserCode());
       String username = userFromDb.getUsername();
-
       String password = userDto.getPassword();
       log.info("userDto passwrod:{}",password);
-
       JwtToken jwtToken = userService.signIn(username,password);
-
       jwtToken.setUser(userFromDb);
-
       log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
       return ResponseEntity.ok(jwtToken);
 

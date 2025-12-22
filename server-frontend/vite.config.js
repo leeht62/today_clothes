@@ -11,9 +11,15 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/ws': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        ws: true // 이 부분이 핵심입니다! 웹소켓 프록시를 활성화합니다.
       }
     }
   }
+  
   ,define: {
     global: 'window' 
   }

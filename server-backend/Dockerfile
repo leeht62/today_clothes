@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk
+FROM amazoncorretto:17
 WORKDIR /app
 COPY build/libs/*SNAPSHOT.jar app.jar
 EXPOSE 8080
