@@ -154,20 +154,6 @@ gradlew.bat test
 
 ---
 
-## 8. 환경 변수 / 설정
-
-현재 프로젝트는 `application.properties` 및 `docker-compose.yml`에서 아래 설정들을 사용합니다.
-
-| 변수명 | 설명 | 예시 |
-| :--- | :--- | :--- |
-| `SPRING_DATASOURCE_URL` | PostgreSQL 연결 URL | `jdbc:postgresql://my-db:5432/clothes` |
-| `SPRING_DATASOURCE_USERNAME` | DB 사용자명 | `postgres` |
-| `SPRING_DATASOURCE_PASSWORD` | DB 비밀번호 | `1234` |
-| `SPRING_DATA_REDIS_HOST` | Redis 호스트 | `my-cache-server` |
-| `SPRING_DATA_REDIS_PORT` | Redis 포트 | `6379` |
-| `SERVER_PORT` | Spring Boot 포트 | `8080` |
-| `SERVER_ADDRESS` | Spring Boot 바인딩 주소 | `0.0.0.0` |
-| `SERVER_SSL_ENABLED` | SSL 활성화 여부 | `false` |
 
 ### 추가 설정
 
