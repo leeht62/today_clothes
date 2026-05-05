@@ -2,9 +2,12 @@ package com.server.today_clothes.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.server.today_clothes.board.dto.BoardLikeCountDto;
 import com.server.today_clothes.comment.dto.MessageDto;
 import com.server.today_clothes.board.mapper.BoardMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -51,6 +54,15 @@ public class RedisService {
       redisTemplate.convertAndSend(topic.getTopic(), json);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
+    }
+  }
+
+  @EventListener(ApplicationReadyEvent.class)
+  public void syncLikesToRedis() {
+    List<BoardLikeCountDto> counts = boardMapper.findAllLikeCounts();
+    for (BoardLikeCountDto count : counts) {
+      redisTemplate.opsForZSet()
+          .add("board:likes", count.getBoardId().toString(), count.getLikeCount());
     }
   }
 

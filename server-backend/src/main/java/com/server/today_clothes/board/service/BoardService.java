@@ -68,7 +68,9 @@ public class BoardService {
   }
 
   // 좋아요 취소
-  public void unlikeBoard(Long boardId) {
+  public void unlikeBoard(Long boardId, String userName) {
+    User user =  userMapper.findByUserName(userName).orElseThrow();
+    boardMapper.deleteLike(user.getId(), boardId);
     redisService.decrementBoardLike(boardId);
   }
 
@@ -85,6 +87,8 @@ public class BoardService {
   //좋아요 추가+ 글쓴이에게 메시지 발송
   public void likeBoard(Long boardId, String userName) {
     Board board = boardMapper.findById(boardId);
+    User user =  userMapper.findByUserName(userName).orElseThrow();
+    boardMapper.insertLike(user.getId(), boardId);
     redisService.incrementBoardLike(boardId);
 
     MessageDto event = new MessageDto(
