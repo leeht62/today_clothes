@@ -15,7 +15,7 @@ export default defineConfig({
       '/ws': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        ws: true // 이 부분이 핵심입니다! 웹소켓 프록시를 활성화합니다.
+        ws: true 
       }
     }
   }

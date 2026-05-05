@@ -1,7 +1,7 @@
 package com.server.today_clothes.notification.subscriber;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.server.today_clothes.dto.MessageDto;
+import com.server.today_clothes.comment.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;

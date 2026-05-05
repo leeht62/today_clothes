@@ -1,0 +1,17 @@
+package com.server.today_clothes.comment.mapper;
+
+import com.server.today_clothes.comment.VO.Comment;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface CommentMapper {
+  List<Comment> findAll();
+
+  Comment findById(Long id);
+  List<Comment> findByBoardId(Long id);
+  void SaveComment(Comment comment);
+  void UpdateComment(Comment commnet);
+  void deleteById(Long id);
+}

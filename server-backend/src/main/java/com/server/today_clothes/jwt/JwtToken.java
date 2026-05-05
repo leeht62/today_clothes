@@ -1,6 +1,6 @@
 package com.server.today_clothes.jwt;
 
-import com.server.today_clothes.dto.UserDto;
+import com.server.today_clothes.user.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

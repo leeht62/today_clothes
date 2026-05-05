@@ -1,6 +1,6 @@
 package com.server.today_clothes.config;
 
-import com.server.today_clothes.dto.WeatherDto;
+import com.server.today_clothes.weather.dto.WeatherDto;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;

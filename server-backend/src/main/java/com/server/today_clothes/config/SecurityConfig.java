@@ -54,10 +54,15 @@ public class SecurityConfig {
         // 요청에 대한 권한 설정
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers("/sign-in").permitAll()
-            .requestMatchers("/sign-up").permitAll()
-            .requestMatchers("/logout").permitAll()
-            .anyRequest().permitAll()
+            .requestMatchers("/sign-in", "/sign-up").permitAll()
+            .requestMatchers("/logout").authenticated()
+            .requestMatchers(HttpMethod.GET, "/boards/**").permitAll()
+            .requestMatchers("/weather-image", "/find-all-weather").authenticated()
+            .requestMatchers(HttpMethod.POST, "/boards/**").authenticated()
+            .requestMatchers(HttpMethod.PUT, "/boards/**").authenticated()
+            .requestMatchers(HttpMethod.PATCH, "/boards/**").authenticated()
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
         )
         .logout(logout -> logout.disable())
         // JWT 필터 등록
