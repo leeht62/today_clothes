@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.server.today_clothes.mapper.BoardMapper">
-    <resultMap id="BoardWithUserAndWeatherMap" type="com.server.today_clothes.VO.Board">
+<mapper namespace="com.server.today_clothes.board.mapper.BoardMapper">
+    <resultMap id="BoardWithUserAndWeatherMap" type="com.server.today_clothes.board.VO.Board">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
         <result property="date" column="date"/>
 
-        <association property="user" javaType="com.server.today_clothes.VO.User">
+        <association property="user" javaType="com.server.today_clothes.user.VO.User">
             <id property="id" column="user.id"/>
             <result property="userCode" column="user.userCode"/>
         </association>
 
-        <association property="weather" javaType="com.server.today_clothes.VO.Weather">
+        <association property="weather" javaType="com.server.today_clothes.weather.VO.Weather">
             <id property="id" column="weather.id"/>
             <result property="temperature" column="weather.temperature"/>
             <result property="description" column="weather.description"/>
@@ -28,7 +28,7 @@
                  LEFT JOIN users u ON b.user_id = u.id
                  LEFT JOIN weather w ON b.weather_id = w.id
     </select>
-    <select id="findById" resultType="com.server.today_clothes.VO.Board" parameterType="long">
+    <select id="findById" resultType="com.server.today_clothes.board.VO.Board" parameterType="long">
         SELECT b.id, b.user_id, b.title, b.content, b.date, b.weather_id,
                u.id as "user.id", u.user_name as "user.username",
                w.id as "weather.id", w.weather_prompt as "weather.weatherPrompt",
@@ -38,12 +38,12 @@
                  LEFT JOIN weather w ON b.weather_id = w.id
         WHERE b.id = #{id}
     </select>
-    <insert id="save" parameterType="com.server.today_clothes.VO.Board"
+    <insert id="save" parameterType="com.server.today_clothes.board.VO.Board"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO boards (user_id, title, content,date,weather_id)
         VALUES (#{user.id}, #{title}, #{content},NOW(),#{weather.id})
     </insert>
-    <update id="update" parameterType="com.server.today_clothes.VO.Board">
+    <update id="update" parameterType="com.server.today_clothes.board.VO.Board">
         UPDATE boards
         SET
             user_id = #{user.id},

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.server.today_clothes.mapper.WeatherMapper">
+<mapper namespace="com.server.today_clothes.weather.mapper.WeatherMapper">
 
-    <select id="findAll" resultType="com.server.today_clothes.VO.Weather">
+    <select id="findAll" resultType="com.server.today_clothes.weather.VO.Weather">
         SELECT id, user_id, weather_prompt, image
         FROM weather
         WHERE user_id=#{userId}
     </select>
-    <select id="findById" resultType="com.server.today_clothes.VO.Weather" parameterType="long">
+    <select id="findById" resultType="com.server.today_clothes.weather.VO.Weather" parameterType="long">
         SELECT id, user_id, weather_prompt, image
         FROM weather
         WHERE id = #{id}
     </select>
-    <insert id="save" parameterType="com.server.today_clothes.VO.Weather"
+    <insert id="save" parameterType="com.server.today_clothes.weather.VO.Weather"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO weather (user_id, weather_prompt, image, created_at,gpt_answer)
         VALUES (#{userId}, #{weatherPrompt}, #{image}, NOW(),#{gptAnswer})
     </insert>
-    <update id="update" parameterType="com.server.today_clothes.VO.Weather">
+    <update id="update" parameterType="com.server.today_clothes.weather.VO.Weather">
         UPDATE weather
         SET
             user_id = #{userId},
