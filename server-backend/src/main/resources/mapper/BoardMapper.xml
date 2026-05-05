@@ -57,4 +57,20 @@
         DELETE FROM boards WHERE id = #{id}
     </delete>
 
+    <insert id="insertLike">
+        INSERT INTO user_likes (user_id, board_id)
+        VALUES (#{userId}, #{boardId})
+    </insert>
+
+    <delete id="deleteLike">
+        DELETE FROM user_likes
+        WHERE user_id = #{userId} AND board_id = #{boardId}
+    </delete>
+
+    <select id="findAllLikeCounts" resultType="com.server.today_clothes.dto.BoardLikeCountDto">
+        SELECT board_id, COUNT(*) as like_count
+        FROM user_likes
+        GROUP BY board_id
+    </select>
+
 </mapper>

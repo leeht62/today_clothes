@@ -65,8 +65,11 @@ public class BoardController {
   }
   // 좋아요 취소
   @PostMapping("/{boardId}/unlike")
-  public ResponseEntity<Void> unlike(@PathVariable Long boardId) {
-    boardService.unlikeBoard(boardId);
+  public ResponseEntity<Void> unlike(
+      @PathVariable Long boardId,
+      Principal principal
+  ) {
+    boardService.unlikeBoard(boardId, principal.getName());
     return ResponseEntity.ok().build();
   }
   //게시글 순위
