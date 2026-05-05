@@ -3,6 +3,7 @@ package com.server.today_clothes.weather.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.server.today_clothes.weather.dto.WeatherDto;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,11 @@ public class WeatherAiService {
 
       return weather;
     }
+  // 캐시를 비우고 이미지를 재생성 하는 로직
+  @CacheEvict(value = "weather", key = "#userKey")
+  public void evictWeatherCache(String userKey) {
+
+  }
 
 
 
