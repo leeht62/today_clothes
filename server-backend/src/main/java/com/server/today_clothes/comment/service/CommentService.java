@@ -10,6 +10,7 @@ import com.server.today_clothes.board.mapper.BoardMapper;
 import com.server.today_clothes.comment.mapper.CommentMapper;
 import com.server.today_clothes.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class CommentService {
   private final BoardMapper boardMapper;
   private final UserMapper userMapper;
   private final MessageService messageService;
+  private final SimpMessagingTemplate simpMessagingTemplate;
 
   public CommentDto saveWeatherComment(CommentDto commentDto){
     Comment comment=new Comment(commentDto);
@@ -85,8 +87,8 @@ public class CommentService {
         board.getId()
     );
 
-    // 4. Redis Pub/Sub으로 알림 발송
-    messageService.publishNotification(board.getUser().getUsername(), event);
+    // 4. WebSocket 댓글 알림 전송
+    simpMessagingTemplate.convertAndSend("/topic/notifications/" + board.getUser().getUsername(), event);
 
     // 5. DTO 반환
     return new CommentDto(comment);
