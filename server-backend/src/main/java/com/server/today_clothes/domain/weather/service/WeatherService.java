@@ -1,0 +1,51 @@
+package com.server.today_clothes.domain.weather.service;
+
+import com.server.today_clothes.domain.user.VO.User;
+import com.server.today_clothes.domain.weather.VO.Weather;
+import com.server.today_clothes.domain.weather.dto.WeatherDto;
+import com.server.today_clothes.domain.user.mapper.UserMapper;
+import com.server.today_clothes.domain.weather.mapper.WeatherMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class WeatherService {
+  private final WeatherMapper weatherMapper;
+  private final UserMapper userMapper;
+
+  public WeatherDto saveWeather(Weather weather,String userName){
+    // userCode로 DB에서 사용자 조회
+    User user = userMapper.findByUserName(userName).orElseThrow();
+    weather.setUserId(user.getId());
+    weatherMapper.save(weather);
+    WeatherDto weatherDto=new WeatherDto(weather);
+    return weatherDto;
+
+  }
+
+  public void deleteWeather(Long id){
+    weatherMapper.deleteById(id);
+  }
+
+  public WeatherDto findWeather(Long id){
+    Weather weather=weatherMapper.findById(id);
+    WeatherDto weatherDto=new WeatherDto(weather);
+    return weatherDto;
+  }
+
+  public List<WeatherDto> findAllWeather(String username){
+    User user=userMapper.findByUserName(username).orElseThrow();
+    List<Weather> weathers=weatherMapper.findAll(user.getId());
+    List<WeatherDto> WeatherDtos=new ArrayList<>();
+    for(Weather weather : weathers){
+      WeatherDto weatherDto=new WeatherDto(weather);
+      WeatherDtos.add(weatherDto);
+    }
+    return WeatherDtos;
+  }
+
+}
