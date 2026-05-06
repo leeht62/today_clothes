@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.server.today_clothes.user.mapper.UserMapper">
+<mapper namespace="com.server.today_clothes.domain.user.mapper.UserMapper">
 <!--    <resultMap  type="com.server.today_clothes.user.VO.User">-->
 <!--        <id property="id" column="id"/>-->
 <!--        <result property="userCode" column="user_code"/>-->
@@ -10,32 +10,32 @@
 <!--        <result property="role" column="role"/>-->
 <!--    </resultMap>-->
 
-    <select id="findAll" resultType="com.server.today_clothes.user.VO.User">
+    <select id="findAll" resultType="com.server.today_clothes.domain.user.VO.User">
         SELECT id, user_code, password, user_name,role
         FROM users
 
     </select>
-    <select id="findById" resultType="com.server.today_clothes.user.VO.User" parameterType="long">
+    <select id="findById" resultType="com.server.today_clothes.domain.user.VO.User" parameterType="long">
         SELECT id, user_code, password, user_name,role
         FROM users
         WHERE id = #{id}
     </select>
-    <select id="findByUserCode" resultType="com.server.today_clothes.user.VO.User" parameterType="String">
+    <select id="findByUserCode" resultType="com.server.today_clothes.domain.user.VO.User" parameterType="String">
         SELECT id, user_code, password, user_name,role
         FROM users
         WHERE user_code = #{userCode}
     </select>
-    <select id="findByUserName" resultType="com.server.today_clothes.user.VO.User" parameterType="String">
+    <select id="findByUserName" resultType="com.server.today_clothes.domain.user.VO.User" parameterType="String">
         SELECT id, user_code, password, user_name, role
         FROM users
         WHERE user_name = #{username}
     </select>
-    <insert id="save" parameterType="com.server.today_clothes.user.VO.User"
+    <insert id="save" parameterType="com.server.today_clothes.domain.user.VO.User"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (user_code, password, user_name,role)
         VALUES (#{userCode}, #{password}, #{username},#{role})
     </insert>
-    <update id="update" parameterType="com.server.today_clothes.user.VO.User">
+    <update id="update" parameterType="com.server.today_clothes.domain.user.VO.User">
         UPDATE users
         SET
             user_code = #{userCode},

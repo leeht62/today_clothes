@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.server.today_clothes.domain.product.mapper.StockMovementMapper">
+
+    <resultMap id="StockMovementResultMap" type="com.server.today_clothes.domain.product.VO.StockMovement">
+        <id property="id" column="id"/>
+        <result property="productId" column="product_id"/>
+        <result property="type" column="type"/>
+        <result property="quantity" column="quantity"/>
+        <result property="note" column="note"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.server.today_clothes.domain.product.VO.StockMovement"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO stock_movement (product_id, type, quantity, note)
+        VALUES (#{productId}, #{type}, #{quantity}, #{note})
+    </insert>
+
+    <select id="findByProductId" parameterType="long" resultMap="StockMovementResultMap">
+        SELECT * FROM stock_movement
+        WHERE product_id = #{productId}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="findByProductIdAndType" resultMap="StockMovementResultMap">
+        SELECT * FROM stock_movement
+        WHERE product_id = #{productId}
+          AND type = #{type}
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>

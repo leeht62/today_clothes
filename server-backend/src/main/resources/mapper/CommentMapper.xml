@@ -1,22 +1,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.server.today_clothes.comment.mapper.CommentMapper">
-    <select id="findByBoardId" parameterType="long" resultType="com.server.today_clothes.comment.VO.Comment">
+<mapper namespace="com.server.today_clothes.domain.comment.mapper.CommentMapper">
+    <select id="findByBoardId" parameterType="long" resultType="com.server.today_clothes.domain.comment.VO.Comment">
         SELECT id, board_id, user_id, comment
         FROM comment
         WHERE board_id = #{boardId}
     </select>
-    <select id="findById" resultType="com.server.today_clothes.comment.VO.Comment" parameterType="long">
+    <select id="findById" resultType="com.server.today_clothes.domain.comment.VO.Comment" parameterType="long">
         SELECT id, user_id, comment
         FROM comment
         WHERE id = #{id}
     </select>
-    <insert id="SaveComment" parameterType="com.server.today_clothes.comment.VO.Comment"
+    <insert id="SaveComment" parameterType="com.server.today_clothes.domain.comment.VO.Comment"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO comment (user_id, comment, board_id,created_at)
         VALUES (#{user.id}, #{comment}, #{board.id}, #{createdAt})
     </insert>
-    <update id="UpdateComment" parameterType="com.server.today_clothes.comment.VO.Comment">
+    <update id="UpdateComment" parameterType="com.server.today_clothes.domain.comment.VO.Comment">
         UPDATE comment
         SET
             user_id = #{user.id},
