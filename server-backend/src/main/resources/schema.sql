@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS product (
     purchase_price INTEGER NOT NULL,
     sale_price     INTEGER NOT NULL,
     discounted_price INTEGER,
+    discounted_stock INTEGER NOT NULL DEFAULT 0,
     stock INTEGER NOT NULL DEFAULT 0,
     original_image TEXT,
     ai_image TEXT,
@@ -69,26 +70,4 @@ CREATE TABLE IF NOT EXISTS stock_movement (
     quantity INTEGER NOT NULL,
     note VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS coupon (
-    id SERIAL PRIMARY KEY,
-    seller_id INTEGER NOT NULL REFERENCES seller(id) ON DELETE CASCADE,
-    inventory_id INTEGER REFERENCES inventory(id) ON DELETE SET NULL,
-    name VARCHAR(100) NOT NULL,
-    discount_rate INTEGER NOT NULL,
-    total_quantity INTEGER NOT NULL,
-    remaining_quantity INTEGER NOT NULL,
-    started_at TIMESTAMP NOT NULL,
-    expired_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 쿠폰 발급 이력 (소비자가 받은 것)
-CREATE TABLE IF NOT EXISTS coupon_issue (
-    id SERIAL PRIMARY KEY,
-    coupon_id INTEGER NOT NULL REFERENCES coupon(id) ON DELETE CASCADE,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (coupon_id, user_id)  -- 한 유저가 같은 쿠폰 중복 발급 방지
 );

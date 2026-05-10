@@ -3,6 +3,7 @@ import com.server.today_clothes.domain.product.VO.Product;
 import com.server.today_clothes.domain.product.VO.StockMovement;
 import com.server.today_clothes.domain.product.mapper.ProductMapper;
 import com.server.today_clothes.domain.product.mapper.StockMovementMapper;
+import com.server.today_clothes.global.config.DiscountStockRedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ public class ProductService {
 
   private final ProductMapper productMapper;
   private final StockMovementMapper stockMovementMapper;
+  private final DiscountStockRedisService discountStockRedisService;
 
   // 상품 등록
   public void registerProduct(Product product) {
@@ -101,5 +103,41 @@ public class ProductService {
   // 상품 삭제
   public void deleteProduct(Long id) {
     productMapper.deleteById(id);
+  }
+
+  @Transactional
+  public void purchaseDiscountedProduct(Long productId, Long userId) {
+    // 1. Redis Lua로 선착순 + 중복 체크
+    int result = discountStockRedisService.tryPurchaseDiscount(productId, userId);
+
+    if (result == -1) throw new IllegalStateException("할인 재고가 소진되었습니다.");
+    if (result == -2) throw new IllegalStateException("이미 구매한 상품입니다.");
+
+    // 2. DB 차감 (안전장치: discounted_stock > 0 조건 포함)
+    int updated = productMapper.decreaseDiscountedStockSafe(productId);
+    if (updated == 0) {
+      // DB에서도 재고 없으면 Redis 롤백
+      discountStockRedisService.rollback(productId, userId);
+      throw new IllegalStateException("재고가 없습니다.");
+    }
+
+    // 3. 이력 기록
+    StockMovement movement = new StockMovement();
+    movement.setProductId(productId);
+    movement.setType("OUT");
+    movement.setQuantity(1);
+    movement.setNote("선착순 할인 구매 - userId: " + userId);
+    stockMovementMapper.save(movement);
+  }
+
+  public void startDiscountSale(Long productId, int discountedStock, int discountedPrice) {
+    Product product = findProduct(productId);
+    product.setDiscountedStock(discountedStock);
+    product.setDiscountedPrice(discountedPrice);
+    productMapper.update(product);
+    productMapper.updateDiscountedStock(productId, discountedStock);
+
+    // Redis에 재고 세팅
+    discountStockRedisService.initDiscountedStock(productId, discountedStock);
   }
 }

@@ -15,6 +15,7 @@
         <result property="originalImage" column="original_image"/>
         <result property="aiImage" column="ai_image"/>
         <result property="status" column="status"/>
+        <result property="discountedStock" column="discounted_stock"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
@@ -64,12 +65,26 @@
 
     <update id="updateStock">
         UPDATE product
-        SET stock = #{stock}, updated_at = NOW()
-        WHERE id = #{id}
+        SET stock = stock - #{quantity}, updated_at = NOW()
+        WHERE id = #{id} AND stock >= #{quantity}
     </update>
 
     <delete id="deleteById" parameterType="long">
         DELETE FROM product WHERE id = #{id}
     </delete>
+
+    <update id="updateDiscountedStock">
+        UPDATE product
+        SET discounted_stock = #{discountedStock}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- DB 안전장치: 재고 있을 때만 차감, 영향받은 row 수 반환 -->
+    <update id="decreaseDiscountedStockSafe">
+        UPDATE product
+        SET discounted_stock = discounted_stock - 1, updated_at = NOW()
+        WHERE id = #{id} AND discounted_stock > 0
+    </update>
+
 
 </mapper>

@@ -9,5 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PurchaseRequestDto {
+  private Long userId;
   private Integer quantity;
+
 }
