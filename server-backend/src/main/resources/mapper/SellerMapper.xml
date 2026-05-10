@@ -1,0 +1,27 @@
+<mapper namespace="com.server.today_clothes.domain.seller.mapper.SellerMapper">
+
+    <insert id="save" parameterType="com.server.today_clothes.domain.seller.VO.Seller"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO seller (user_id, shop_name, address, phone)
+        VALUES (#{userId}, #{shopName}, #{address}, #{phone})
+    </insert>
+
+    <select id="findByUserId" resultType="com.server.today_clothes.domain.seller.VO.Seller">
+        SELECT * FROM seller WHERE user_id = #{userId}
+    </select>
+
+    <select id="findById" resultType="com.server.today_clothes.domain.seller.VO.Seller">
+        SELECT * FROM seller WHERE id = #{id}
+    </select>
+
+    <update id="update" parameterType="com.server.today_clothes.domain.seller.VO.Seller">
+        UPDATE seller
+        <set>
+            <if test="shopName != null">shop_name = #{shopName},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="phone != null">phone = #{phone}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

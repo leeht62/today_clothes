@@ -5,10 +5,13 @@ import com.server.today_clothes.domain.product.dto.ProductRequestDto;
 import com.server.today_clothes.domain.product.dto.ProductUpdateRequestDto;
 import com.server.today_clothes.domain.product.dto.StockInRequestDto;
 import com.server.today_clothes.domain.product.service.ProductService;
+import com.server.today_clothes.domain.seller.VO.Seller;
+import com.server.today_clothes.domain.seller.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -18,10 +21,14 @@ import org.springframework.web.bind.annotation.*;
 public class SellerProductController {
 
   private final ProductService productService;
+  private final SellerService sellerService;
 
   // 상품 등록
   @PostMapping
   public ResponseEntity<Void> register(@RequestBody ProductRequestDto request) {
+    String userCode = SecurityContextHolder.getContext().getAuthentication().getName();
+    Seller seller = sellerService.findSellerByUserCode(userCode);
+
 
     Product product = Product.builder()
         .sellerId(request.getSellerId())
