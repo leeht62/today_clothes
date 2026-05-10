@@ -61,4 +61,11 @@ public class SellerProductController {
     return ResponseEntity.ok().build();
   }
 
+  @PostMapping("/{productId}/discount")
+  public ResponseEntity<Void> startDiscount(@PathVariable Long productId,
+                                            @RequestBody ProductUpdateRequestDto request) {
+    productService.startDiscountSale(productId, request.getDiscountedStock(), request.getDiscountedPrice());
+    return ResponseEntity.ok().build();
+  }
+
 }

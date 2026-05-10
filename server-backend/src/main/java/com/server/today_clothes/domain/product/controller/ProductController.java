@@ -43,4 +43,15 @@ public class ProductController {
     productService.decreaseStock(productId, request.getQuantity(), "구매");
     return ResponseEntity.ok().build();
   }
+
+  //할인 구매
+  @PostMapping("/{productId}/discount-purchase")
+  public ResponseEntity<Void> discountPurchase(@PathVariable Long productId,
+                                               @RequestBody PurchaseRequestDto request) {
+    productService.purchaseDiscountedProduct(productId, request.getUserId());
+    return ResponseEntity.ok().build();
+  }
+
+
+
 }
