@@ -3,6 +3,7 @@ package com.server.today_clothes.domain.payment.controller;
 import com.server.today_clothes.domain.payment.VO.Payment;
 import com.server.today_clothes.domain.payment.dto.CreatePaymentRequestDto;
 import com.server.today_clothes.domain.payment.dto.PaymentResponseDto;
+import com.server.today_clothes.domain.payment.dto.PaymentSuccessRequestDto;
 import com.server.today_clothes.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,12 @@ public class PaymentController {
 
   // Toss 결제 성공 콜백
   @GetMapping("/success")
-  public ResponseEntity<Void> paymentSuccess(
-      @RequestParam String paymentKey,
-      @RequestParam String orderId,
-      @RequestParam Long amount
-  ) {
-    paymentService.completePayment(orderId, paymentKey, amount);
+  public ResponseEntity<Void> paymentSuccess(PaymentSuccessRequestDto request) {
+    paymentService.completePayment(
+        request.getOrderId(),
+        request.getPaymentKey(),
+        request.getAmount()
+    );
     return ResponseEntity.ok().build();
   }
 
