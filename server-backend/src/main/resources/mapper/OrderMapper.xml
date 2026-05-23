@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.server.today_clothes.domain.order.mapper.OrderMapper">
+
+    <resultMap id="OrderResultMap" type="com.server.today_clothes.domain.order.VO.Order">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="quantity" column="quantity"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="discountPrice" column="discount_price"/>
+        <result property="orderType" column="order_type"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="status" column="status"/>
+        <result property="reservedUntil" column="reserved_until"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.server.today_clothes.domain.order.VO.Order"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (
+            user_id,
+            product_id,
+            quantity,
+            unit_price,
+            discount_price,
+            order_type,
+            total_amount,
+            status,
+            reserved_until
+        )
+        VALUES (
+                   #{userId},
+                   #{productId},
+                   #{quantity},
+                   #{unitPrice},
+                   #{discountPrice},
+                   #{orderType},
+                   #{totalAmount},
+                   #{status},
+                   #{reservedUntil}
+               )
+    </insert>
+
+    <select id="findById" parameterType="long" resultMap="OrderResultMap">
+        SELECT *
+        FROM orders
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAllByUserId" parameterType="long" resultMap="OrderResultMap">
+        SELECT *
+        FROM orders
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="findAllByProductId" parameterType="long" resultMap="OrderResultMap">
+        SELECT *
+        FROM orders
+        WHERE product_id = #{productId}
+        ORDER BY created_at DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE orders
+        SET status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePaid">
+        UPDATE orders
+        SET status = 'PAID',
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateFailed">
+        UPDATE orders
+        SET status = 'FAILED',
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateCanceled">
+        UPDATE orders
+        SET status = 'CANCELED',
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateExpired">
+        UPDATE orders
+        SET status = 'EXPIRED',
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

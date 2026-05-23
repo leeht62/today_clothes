@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.server.today_clothes.domain.payment.mapper.PaymentMapper">
+
+    <resultMap id="PaymentResultMap" type="com.server.today_clothes.domain.payment.VO.Payment">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="tossOrderId" column="toss_order_id"/>
+        <result property="paymentKey" column="payment_key"/>
+        <result property="idempotencyKey" column="idempotency_key"/>
+        <result property="amount" column="amount"/>
+        <result property="status" column="status"/>
+        <result property="paidAt" column="paid_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.server.today_clothes.domain.payment.VO.Payment"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO payments (
+            order_id,
+            user_id,
+            toss_order_id,
+            payment_key,
+            idempotency_key,
+            amount,
+            status,
+            paid_at
+        )
+        VALUES (
+                   #{orderId},
+                   #{userId},
+                   #{tossOrderId},
+                   #{paymentKey},
+                   #{idempotencyKey},
+                   #{amount},
+                   #{status},
+                   #{paidAt}
+               )
+    </insert>
+
+    <select id="findById" parameterType="long" resultMap="PaymentResultMap">
+        SELECT *
+        FROM payments
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByOrderId" parameterType="long" resultMap="PaymentResultMap">
+        SELECT *
+        FROM payments
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="findByTossOrderId" parameterType="string" resultMap="PaymentResultMap">
+        SELECT *
+        FROM payments
+        WHERE toss_order_id = #{tossOrderId}
+    </select>
+
+    <select id="findByPaymentKey" parameterType="string" resultMap="PaymentResultMap">
+        SELECT *
+        FROM payments
+        WHERE payment_key = #{paymentKey}
+    </select>
+
+    <select id="findByIdempotencyKey" parameterType="string" resultMap="PaymentResultMap">
+        SELECT *
+        FROM payments
+        WHERE idempotency_key = #{idempotencyKey}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE payments
+        SET status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateSuccess">
+        UPDATE payments
+        SET payment_key = #{paymentKey},
+            status = 'SUCCESS',
+            paid_at = NOW(),
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateFailed">
+        UPDATE payments
+        SET status = 'FAILED',
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>
