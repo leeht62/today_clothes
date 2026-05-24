@@ -4,7 +4,10 @@ import com.server.today_clothes.domain.order.VO.Order;
 import com.server.today_clothes.domain.order.mapper.OrderMapper;
 import com.server.today_clothes.domain.payment.VO.Payment;
 import com.server.today_clothes.domain.payment.VO.PaymentStatus;
+import com.server.today_clothes.domain.payment.dto.TossConfirmRequestDto;
+import com.server.today_clothes.domain.payment.infrastructure.TossPaymentClient;
 import com.server.today_clothes.domain.payment.mapper.PaymentMapper;
+import com.server.today_clothes.global.config.TossPaymentConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ public class PaymentService {
 
   private final PaymentMapper paymentMapper;
   private final OrderMapper orderMapper;
+  private final TossPaymentClient tossPaymentClient;
 
   @Transactional
   public Payment createPayment(Long orderId, Long userId) {
@@ -67,12 +71,19 @@ public class PaymentService {
       throw new IllegalArgumentException("결제 금액이 일치하지 않습니다.");
     }
 
+    TossConfirmRequestDto confirmRequest = new TossConfirmRequestDto(
+        paymentKey,
+        tossOrderId,
+        amount
+    );
+
     if (payment.getStatus() == PaymentStatus.SUCCESS) {
       return;
     }
 
     paymentMapper.updateSuccess(payment.getId(), paymentKey);
     orderMapper.updatePaid(payment.getOrderId());
+    tossPaymentClient.confirm(confirmRequest, payment.getIdempotencyKey());
   }
 
   @Transactional
