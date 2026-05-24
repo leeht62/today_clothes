@@ -8,6 +8,10 @@ import com.server.today_clothes.domain.payment.dto.TossConfirmRequestDto;
 import com.server.today_clothes.domain.payment.infrastructure.TossPaymentClient;
 import com.server.today_clothes.domain.payment.mapper.PaymentMapper;
 import com.server.today_clothes.global.config.TossPaymentConfig;
+import com.server.today_clothes.domain.product.service.ProductService;
+import com.server.today_clothes.domain.order.VO.OrderStatus;
+import com.server.today_clothes.domain.order.VO.OrderType;
+import com.server.today_clothes.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,7 @@ public class PaymentService {
   private final PaymentMapper paymentMapper;
   private final OrderMapper orderMapper;
   private final TossPaymentClient tossPaymentClient;
+  private final ProductService productService;
 
   @Transactional
   public Payment createPayment(Long orderId, Long userId) {
@@ -29,6 +34,15 @@ public class PaymentService {
 
     if (order == null) {
       throw new IllegalArgumentException("존재하지 않는 주문입니다.");
+    }
+
+    if (order.getStatus() != OrderStatus.PENDING) {
+      throw new IllegalStateException("결제 대기 상태의 주문만 결제할 수 있습니다.");
+    }
+
+    if (order.getReservedUntil() != null && order.getReservedUntil().isBefore(LocalDateTime.now())) {
+      orderMapper.updateExpired(order.getId());
+      throw new IllegalStateException("주문 결제 시간이 만료되었습니다.");
     }
 
     if (!order.getUserId().equals(userId)) {
@@ -65,6 +79,26 @@ public class PaymentService {
       throw new IllegalArgumentException("존재하지 않는 결제 정보입니다.");
     }
 
+    if (payment.getStatus() == PaymentStatus.SUCCESS) {
+      return;
+    }
+
+    Order order = orderMapper.findById(payment.getOrderId());
+
+    if (order == null) {
+      throw new IllegalArgumentException("존재하지 않는 주문입니다.");
+    }
+
+    if (order.getStatus() != OrderStatus.PENDING) {
+      throw new IllegalStateException("결제 대기 상태의 주문만 결제 완료 처리할 수 있습니다.");
+    }
+
+    if (order.getReservedUntil() != null && order.getReservedUntil().isBefore(LocalDateTime.now())) {
+      paymentMapper.updateFailed(payment.getId());
+      orderMapper.updateExpired(order.getId());
+      throw new IllegalStateException("주문 결제 시간이 만료되었습니다.");
+    }
+
     if (!payment.getAmount().equals(amount)) {
       paymentMapper.updateFailed(payment.getId());
       orderMapper.updateFailed(payment.getOrderId());
@@ -77,13 +111,18 @@ public class PaymentService {
         amount
     );
 
-    if (payment.getStatus() == PaymentStatus.SUCCESS) {
-      return;
+    tossPaymentClient.confirm(confirmRequest, payment.getIdempotencyKey());
+
+    if (order.getOrderType() == OrderType.NORMAL) {
+      productService.decreaseStock(
+          order.getProductId(),
+          order.getQuantity(),
+          "주문 결제 완료 - orderId: " + order.getId()
+      );
     }
 
     paymentMapper.updateSuccess(payment.getId(), paymentKey);
     orderMapper.updatePaid(payment.getOrderId());
-    tossPaymentClient.confirm(confirmRequest, payment.getIdempotencyKey());
   }
 
   @Transactional
@@ -93,6 +132,22 @@ public class PaymentService {
     if (payment == null) {
       throw new IllegalArgumentException("존재하지 않는 결제 정보입니다.");
     }
+
+    Order order = orderMapper.findById(payment.getOrderId());
+
+    if (order == null) {
+      throw new IllegalArgumentException("존재하지 않는 주문입니다.");
+    }
+
+    if (order.getStatus() == OrderStatus.PENDING && order.getOrderType() == OrderType.DISCOUNT) {
+      productService.rollbackDiscountStock(
+          order.getProductId(),
+          order.getUserId(),
+          order.getQuantity(),
+          "할인 주문 결제 실패 재고 복구 - orderId: " + order.getId()
+      );
+    }
+
 
     paymentMapper.updateFailed(payment.getId());
     orderMapper.updateFailed(payment.getOrderId());

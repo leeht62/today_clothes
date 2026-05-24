@@ -36,21 +36,13 @@ public class ProductController {
     return ResponseEntity.ok(new ProductResponseDto(productService.findProduct(productId)));
   }
 
-  // 구매 및 재고차감
-  @PostMapping("/{productId}/purchase")
-  public ResponseEntity<Void> purchase(@PathVariable Long productId,
-                                       @RequestBody PurchaseRequestDto request) {
-    productService.decreaseStock(productId, request.getQuantity(), "구매");
-    return ResponseEntity.ok().build();
-  }
-
   //할인 구매
-  @PostMapping("/{productId}/discount-purchase")
-  public ResponseEntity<Void> discountPurchase(@PathVariable Long productId,
-                                               @RequestBody PurchaseRequestDto request) {
-    productService.purchaseDiscountedProduct(productId, request.getUserId());
-    return ResponseEntity.ok().build();
-  }
+//  @PostMapping("/{productId}/discount-purchase")
+//  public ResponseEntity<Void> discountPurchase(@PathVariable Long productId,
+//                                               @RequestBody PurchaseRequestDto request) {
+//    productService.purchaseDiscountedProduct(productId, request.getUserId());
+//    return ResponseEntity.ok().build();
+//  }
 
 
 

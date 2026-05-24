@@ -17,26 +17,6 @@ public class DiscountStockRedisService {
 
   private final RedisTemplate<String, Object> redisTemplate;
 
-  public int tryPurchaseDiscount(Long productId, Long userId) {
-    String stockKey = "product:" + productId + ":discounted_stock";
-    String userKey = "user:" + userId + ":product:" + productId + ":discount";
-
-    // 중복 체크
-    Boolean isNew = redisTemplate.opsForValue()
-        .setIfAbsent(userKey, "1", Duration.ofDays(1));
-    if (Boolean.FALSE.equals(isNew)) return -2;
-
-    // 재고 차감
-    Long remaining = redisTemplate.opsForValue().decrement(stockKey);
-    if (remaining < 0) {
-      redisTemplate.opsForValue().increment(stockKey);
-      redisTemplate.delete(userKey);
-      return -1;
-    }
-
-    return 1;
-  }
-
   // 서버 재시작 시 또는 할인 시작 시 Redis에 재고 세팅
   public void initDiscountedStock(Long productId, int stock) {
     String stockKey = "product:" + productId + ":discounted_stock";
@@ -48,6 +28,36 @@ public class DiscountStockRedisService {
     String stockKey = "product:" + productId + ":discounted_stock";
     String userKey = "user:" + userId + ":product:" + productId + ":discount";
     redisTemplate.opsForValue().increment(stockKey);
+    redisTemplate.delete(userKey);
+  }
+
+  public int tryReserveDiscount(Long productId, Long userId, int quantity) {
+    String stockKey = "product:" + productId + ":discounted_stock";
+    String userKey = "user:" + userId + ":product:" + productId + ":discount";
+
+    Boolean isNew = redisTemplate.opsForValue()
+        .setIfAbsent(userKey, "1", Duration.ofDays(1));
+
+    if (Boolean.FALSE.equals(isNew)) {
+      return -2;
+    }
+
+    Long remaining = redisTemplate.opsForValue().decrement(stockKey, quantity);
+
+    if (remaining == null || remaining < 0) {
+      redisTemplate.opsForValue().increment(stockKey, quantity);
+      redisTemplate.delete(userKey);
+      return -1;
+    }
+
+    return 1;
+  }
+
+  public void rollbackDiscountReservation(Long productId, Long userId, int quantity) {
+    String stockKey = "product:" + productId + ":discounted_stock";
+    String userKey = "user:" + userId + ":product:" + productId + ":discount";
+
+    redisTemplate.opsForValue().increment(stockKey, quantity);
     redisTemplate.delete(userKey);
   }
 

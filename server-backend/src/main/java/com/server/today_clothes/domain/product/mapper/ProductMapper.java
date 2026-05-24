@@ -13,9 +13,10 @@ public interface ProductMapper {
   List<Product> findAll(@Param("category") String category, @Param("status") String status);
   List<Product> findAllBySellerId(Long sellerId);
   void updateDiscountedStock(@Param("id") Long id, @Param("discountedStock") int discountedStock);
-  int decreaseDiscountedStockSafe(@Param("id") Long id);
+  int decreaseDiscountedStockSafe(@Param("id") Long id, @Param("quantity") int quantity);
+  void increaseDiscountedStock(@Param("id") Long id, @Param("quantity") int quantity);
   void update(Product product);
-  void updateStock(@Param("id") Long id, @Param("quantity") int quantity);
-  void decreaseStock(@Param("id") Long id, @Param("quantity") int quantity);
+  void increaseStock(@Param("id") Long id, @Param("quantity") int quantity);
+  int decreaseStock(@Param("id") Long id, @Param("quantity") int quantity);
   void deleteById(Long id);
 }
