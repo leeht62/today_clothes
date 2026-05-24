@@ -18,15 +18,15 @@ public class SellerController {
 
   @PostMapping("/register")
   public ResponseEntity<Void> register(@RequestBody SellerRequestDto request) {
-    String userCode = SecurityContextHolder.getContext().getAuthentication().getName();
-    sellerService.registerSeller(userCode, request);
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    sellerService.registerSeller(userName, request);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @GetMapping("/me")
   public ResponseEntity<Seller> getMyInfo() {
     String userCode = SecurityContextHolder.getContext().getAuthentication().getName();
-    return ResponseEntity.ok(sellerService.findSellerByUserCode(userCode));
+    return ResponseEntity.ok(sellerService.findSellerByUserName(userCode));
   }
 
   @PutMapping("/me")

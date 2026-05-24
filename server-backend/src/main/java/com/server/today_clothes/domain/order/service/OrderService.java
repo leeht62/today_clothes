@@ -6,6 +6,7 @@ import com.server.today_clothes.domain.order.VO.OrderType;
 import com.server.today_clothes.domain.order.mapper.OrderMapper;
 import com.server.today_clothes.domain.product.VO.Product;
 import com.server.today_clothes.domain.product.service.ProductService;
+import com.server.today_clothes.global.config.DiscountStockRedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,49 +23,62 @@ public class OrderService {
 
   @Transactional
   public Order createOrder(Long userId, Long productId, Integer quantity, OrderType orderType) {
-    if (quantity == null || quantity <= 0) {
-      throw new IllegalArgumentException("주문 수량은 1개 이상이어야 합니다.");
+    boolean discountReserved = false;
+
+    try {
+      if (quantity == null || quantity <= 0) {
+        throw new IllegalArgumentException("주문 수량은 1 이상이어야 합니다.");
+      }
+
+      Product product = productService.findProduct(productId);
+
+      Long unitPrice = Long.valueOf(product.getSalePrice());
+      Long discountPrice = null;
+      Long finalUnitPrice = unitPrice;
+
+      if (orderType == OrderType.DISCOUNT) {
+        if (product.getDiscountedPrice() == null) {
+          throw new IllegalArgumentException("할인 상품이 아닙니다.");
+        }
+
+        if (product.getDiscountedStock() == null || product.getDiscountedStock() < quantity) {
+          throw new IllegalStateException("할인 재고가 부족합니다.");
+        }
+
+        productService.reserveDiscountStock(productId, userId, quantity);
+        discountReserved = true;
+
+        discountPrice = Long.valueOf(product.getDiscountedPrice());
+        finalUnitPrice = discountPrice;
+      } else {
+        if (product.getStock() < quantity) {
+          throw new IllegalStateException("재고가 부족합니다.");
+        }
+      }
+
+      Order order = new Order();
+      order.setUserId(userId);
+      order.setProductId(productId);
+      order.setQuantity(quantity);
+      order.setUnitPrice(unitPrice);
+      order.setDiscountPrice(discountPrice);
+      order.setOrderType(orderType);
+      order.setTotalAmount(finalUnitPrice * quantity);
+      order.setStatus(OrderStatus.PENDING);
+      order.setReservedUntil(LocalDateTime.now().plusMinutes(10));
+      order.setCreatedAt(LocalDateTime.now());
+      order.setUpdatedAt(LocalDateTime.now());
+
+      orderMapper.save(order);
+
+      return order;
+    } catch (RuntimeException e) {
+      if (discountReserved) {
+        productService.rollbackDiscountRedisOnly(productId, userId, quantity);
+      }
+
+      throw e;
     }
-
-    Product product = productService.findProduct(productId);
-
-    Long unitPrice = Long.valueOf(product.getSalePrice());
-    Long discountPrice = null;
-    Long finalUnitPrice = unitPrice;
-
-    if (orderType == OrderType.DISCOUNT) {
-      if (product.getDiscountedPrice() == null) {
-        throw new IllegalArgumentException("할인 상품이 아닙니다.");
-      }
-
-      if (product.getDiscountedStock() == null || product.getDiscountedStock() < quantity) {
-        throw new IllegalStateException("할인 재고가 부족합니다.");
-      }
-
-      discountPrice = Long.valueOf(product.getDiscountedPrice());
-      finalUnitPrice = discountPrice;
-    } else {
-      if (product.getStock() < quantity) {
-        throw new IllegalStateException("재고가 부족합니다.");
-      }
-    }
-
-    Order order = new Order();
-    order.setUserId(userId);
-    order.setProductId(productId);
-    order.setQuantity(quantity);
-    order.setUnitPrice(unitPrice);
-    order.setDiscountPrice(discountPrice);
-    order.setOrderType(orderType);
-    order.setTotalAmount(finalUnitPrice * quantity);
-    order.setStatus(OrderStatus.PENDING);
-    order.setReservedUntil(LocalDateTime.now().plusMinutes(10));
-    order.setCreatedAt(LocalDateTime.now());
-    order.setUpdatedAt(LocalDateTime.now());
-
-    orderMapper.save(order);
-
-    return order;
   }
 
   public Order findOrder(Long orderId) {
@@ -119,6 +133,15 @@ public class OrderService {
       return;
     }
 
+    if (order.getOrderType() == OrderType.DISCOUNT) {
+      productService.rollbackDiscountStock(
+          order.getProductId(),
+          order.getUserId(),
+          order.getQuantity(),
+          "할인 주문 취소 재고 복구 - orderId: " + order.getId()
+      );
+    }
+
     orderMapper.updateCanceled(orderId);
   }
 
@@ -129,7 +152,18 @@ public class OrderService {
     if (order.getStatus() != OrderStatus.PENDING) {
       return;
     }
+    if (order.getOrderType() == OrderType.DISCOUNT) {
+      productService.rollbackDiscountStock(
+          order.getProductId(),
+          order.getUserId(),
+          order.getQuantity(),
+          "할인 주문 만료 재고 복구 - orderId: " + order.getId()
+      );
+    }
+
 
     orderMapper.updateExpired(orderId);
   }
+
+
 }

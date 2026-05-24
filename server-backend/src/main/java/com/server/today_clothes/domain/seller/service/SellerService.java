@@ -18,8 +18,8 @@ public class SellerService {
 
   // 판매자 등록
   @Transactional
-  public void registerSeller(String userCode, SellerRequestDto request) {
-    User user = userMapper.findByUserCode(userCode)
+  public void registerSeller(String userName, SellerRequestDto request) {
+    User user = userMapper.findByUserName(userName)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
     if (sellerMapper.findByUserId(user.getId()) != null) {
@@ -39,8 +39,8 @@ public class SellerService {
   }
 
   // userCode로 seller 조회 (컨트롤러에서 JWT → userCode → seller)
-  public Seller findSellerByUserCode(String userCode) {
-    User user = userMapper.findByUserCode(userCode)
+  public Seller findSellerByUserName(String userName) {
+    User user = userMapper.findByUserName(userName)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
     Seller seller = sellerMapper.findByUserId(user.getId());
     if (seller == null) throw new IllegalStateException("판매자 정보가 없습니다.");
@@ -49,8 +49,8 @@ public class SellerService {
 
   // shop 정보 수정
   @Transactional
-  public void updateSeller(String userCode, SellerRequestDto request) {
-    Seller seller = findSellerByUserCode(userCode);
+  public void updateSeller(String userName, SellerRequestDto request) {
+    Seller seller = findSellerByUserName(userName);
     seller.setShopName(request.getShopName());
     seller.setAddress(request.getAddress());
     seller.setPhone(request.getPhone());

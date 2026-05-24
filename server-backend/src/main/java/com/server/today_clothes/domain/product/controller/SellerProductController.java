@@ -26,12 +26,12 @@ public class SellerProductController {
   // 상품 등록
   @PostMapping
   public ResponseEntity<Void> register(@RequestBody ProductRequestDto request) {
-    String userCode = SecurityContextHolder.getContext().getAuthentication().getName();
-    Seller seller = sellerService.findSellerByUserCode(userCode);
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    Seller seller = sellerService.findSellerByUserName(userName);
 
 
     Product product = Product.builder()
-        .sellerId(request.getSellerId())
+        .sellerId(seller.getId())
         .name(request.getName())
         .category(request.getCategory())
         .purchasePrice(request.getPurchasePrice())
@@ -49,6 +49,11 @@ public class SellerProductController {
   public ResponseEntity<Void> update(@PathVariable Long productId,
                                      @RequestBody ProductUpdateRequestDto request) {
 
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    Seller seller = sellerService.findSellerByUserName(userName);
+
+    productService.findProductOwnedBySeller(productId, seller.getId());
+
     Product product = Product.builder()
         .id(productId)
         .name(request.getName())
@@ -64,6 +69,10 @@ public class SellerProductController {
   @PostMapping("/{productId}/stock/in")
   public ResponseEntity<Void> stockIn(@PathVariable Long productId,
                                       @RequestBody StockInRequestDto request) {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    Seller seller = sellerService.findSellerByUserName(userName);
+
+    productService.findProductOwnedBySeller(productId, seller.getId());
     productService.increaseStock(productId, request.getQuantity(), request.getNote());
     return ResponseEntity.ok().build();
   }
@@ -71,6 +80,10 @@ public class SellerProductController {
   @PostMapping("/{productId}/discount")
   public ResponseEntity<Void> startDiscount(@PathVariable Long productId,
                                             @RequestBody ProductUpdateRequestDto request) {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    Seller seller = sellerService.findSellerByUserName(userName);
+
+    productService.findProductOwnedBySeller(productId, seller.getId());
     productService.startDiscountSale(productId, request.getDiscountedStock(), request.getDiscountedPrice());
     return ResponseEntity.ok().build();
   }

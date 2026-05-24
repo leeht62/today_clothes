@@ -4,6 +4,7 @@ import com.server.today_clothes.domain.product.VO.StockMovement;
 import com.server.today_clothes.domain.product.mapper.ProductMapper;
 import com.server.today_clothes.domain.product.mapper.StockMovementMapper;
 import com.server.today_clothes.global.config.DiscountStockRedisService;
+import org.springframework.security.access.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,18 @@ public class ProductService {
     return product;
   }
 
-  // 전체 상품 조회 (카테고리, 상태 필터)
+  public Product findProductOwnedBySeller(Long productId, Long sellerId) {
+    Product product = findProduct(productId);
+
+    if (!product.getSellerId().equals(sellerId)) {
+      throw new AccessDeniedException("본인 상품만 관리할 수 있습니다.");
+    }
+
+    return product;
+  }
+
+
+  // 전체 상품 조회
   public List<Product> findAllProducts(String category, String status) {
     return productMapper.findAll(category, status);
   }
@@ -45,13 +57,11 @@ public class ProductService {
     productMapper.update(product);
   }
 
-  // 입고 처리 (IN)
+  // 입고 처리
   @Transactional
   public void increaseStock(Long productId, int quantity, String note) {
-    Product product = findProduct(productId);
 
-    int newStock = product.getStock() + quantity;
-    productMapper.updateStock(productId, newStock);
+    productMapper.increaseStock(productId, quantity);
 
     StockMovement movement = new StockMovement();
     movement.setProductId(productId);
@@ -61,17 +71,20 @@ public class ProductService {
     stockMovementMapper.save(movement);
   }
 
-  // 출고 처리 (OUT) - 음수재고 방지 패턴
+  // 출고 처리
   @Transactional
   public void decreaseStock(Long productId, int quantity, String note) {
     Product product = findProduct(productId);
 
-    if (product.getStock() < quantity) {
-      throw new IllegalStateException("재고가 부족합니다. 현재 재고: " + product.getStock());
+    if (quantity <= 0) {
+      throw new IllegalArgumentException("차감 수량은 1 이상이어야 합니다.");
     }
 
-    int newStock = product.getStock() - quantity;
-    productMapper.decreaseStock(productId, newStock);
+    int updated = productMapper.decreaseStock(productId, quantity);
+
+    if (updated == 0) {
+      throw new IllegalStateException("재고가 부족합니다. 현재 재고: " + product.getStock());
+    }
 
     StockMovement movement = new StockMovement();
     movement.setProductId(productId);
@@ -81,53 +94,9 @@ public class ProductService {
     stockMovementMapper.save(movement);
   }
 
-  // 재고 조정 (ADJUST)
-  @Transactional
-  public void adjustStock(Long productId, int newStock, String note) {
-    findProduct(productId);
-
-    if (newStock < 0) {
-      throw new IllegalArgumentException("재고는 0 이상이어야 합니다.");
-    }
-
-    productMapper.updateStock(productId, newStock);
-
-    StockMovement movement = new StockMovement();
-    movement.setProductId(productId);
-    movement.setType("ADJUST");
-    movement.setQuantity(newStock);
-    movement.setNote(note);
-    stockMovementMapper.save(movement);
-  }
-
   // 상품 삭제
   public void deleteProduct(Long id) {
     productMapper.deleteById(id);
-  }
-
-  @Transactional
-  public void purchaseDiscountedProduct(Long productId, Long userId) {
-    // 1. Redis Lua로 선착순 + 중복 체크
-    int result = discountStockRedisService.tryPurchaseDiscount(productId, userId);
-
-    if (result == -1) throw new IllegalStateException("할인 재고가 소진되었습니다.");
-    if (result == -2) throw new IllegalStateException("이미 구매한 상품입니다.");
-
-    // 2. DB 차감 (안전장치: discounted_stock > 0 조건 포함)
-    int updated = productMapper.decreaseDiscountedStockSafe(productId);
-    if (updated == 0) {
-      // DB에서도 재고 없으면 Redis 롤백
-      discountStockRedisService.rollback(productId, userId);
-      throw new IllegalStateException("재고가 없습니다.");
-    }
-
-    // 3. 이력 기록
-    StockMovement movement = new StockMovement();
-    movement.setProductId(productId);
-    movement.setType("OUT");
-    movement.setQuantity(1);
-    movement.setNote("선착순 할인 구매 - userId: " + userId);
-    stockMovementMapper.save(movement);
   }
 
   public void startDiscountSale(Long productId, int discountedStock, int discountedPrice) {
@@ -139,5 +108,57 @@ public class ProductService {
 
     // Redis에 재고 세팅
     discountStockRedisService.initDiscountedStock(productId, discountedStock);
+  }
+
+  @Transactional
+  public void reserveDiscountStock(Long productId, Long userId, int quantity) {
+    if (quantity <= 0) {
+      throw new IllegalArgumentException("주문 수량은 1 이상이어야 합니다.");
+    }
+
+    int result = discountStockRedisService.tryReserveDiscount(productId, userId, quantity);
+
+    if (result == -1) {
+      throw new IllegalStateException("할인 재고가 부족합니다.");
+    }
+
+    if (result == -2) {
+      throw new IllegalStateException("이미 구매한 할인 상품입니다.");
+    }
+
+    int updated = productMapper.decreaseDiscountedStockSafe(productId, quantity);
+
+    if (updated == 0) {
+      discountStockRedisService.rollbackDiscountReservation(productId, userId, quantity);
+      throw new IllegalStateException("할인 재고가 부족합니다.");
+    }
+
+    StockMovement movement = new StockMovement();
+    movement.setProductId(productId);
+    movement.setType("OUT");
+    movement.setQuantity(quantity);
+    movement.setNote("할인 주문 재고 선점 - userId: " + userId);
+    stockMovementMapper.save(movement);
+  }
+
+  @Transactional
+  public void rollbackDiscountStock(Long productId, Long userId, int quantity, String note) {
+    if (quantity <= 0) {
+      return;
+    }
+
+    productMapper.increaseDiscountedStock(productId, quantity);
+    discountStockRedisService.rollbackDiscountReservation(productId, userId, quantity);
+
+    StockMovement movement = new StockMovement();
+    movement.setProductId(productId);
+    movement.setType("IN");
+    movement.setQuantity(quantity);
+    movement.setNote(note);
+    stockMovementMapper.save(movement);
+  }
+
+  public void rollbackDiscountRedisOnly(Long productId, Long userId, int quantity) {
+    discountStockRedisService.rollbackDiscountReservation(productId, userId, quantity);
   }
 }
