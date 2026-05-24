@@ -32,6 +32,11 @@ Today Clothes는 이 문제를 해결하기 위해 판매자가 등록한 의류
   <img width="500" height="855" alt="today-clothes drawios" src="https://github.com/user-attachments/assets/19fb0303-0794-46cc-aa03-df5c9487a9ed" />
 </div>
 
+## ERD
+<div align="center">
+  <img width="5184" height="8192" alt="Untitled diagram-2026-05-24-082811" src="https://github.com/user-attachments/assets/d6d6d8ac-cb36-415c-8ffc-c4798324d743" />
+</div>
+
 
 ## ✨ 5. 주요 기능 소개
 
