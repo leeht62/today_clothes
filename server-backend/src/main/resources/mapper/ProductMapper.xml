@@ -86,5 +86,17 @@
         WHERE id = #{id} AND discounted_stock > 0
     </update>
 
+    <update id="decreaseStock">
+        UPDATE product
+        SET stock = stock - #{quantity}, updated_at = NOW()
+        WHERE id = #{id} AND stock >= #{quantity}
+    </update>
+
+    <update id="increaseStock">
+        UPDATE product
+        SET stock = stock + #{quantity}, updated_at = NOW()
+        WHERE id = #{id} AND stock >= #{quantity}
+    </update>
+
 
 </mapper>

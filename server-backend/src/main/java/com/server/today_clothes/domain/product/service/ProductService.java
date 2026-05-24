@@ -71,7 +71,7 @@ public class ProductService {
     }
 
     int newStock = product.getStock() - quantity;
-    productMapper.updateStock(productId, newStock);
+    productMapper.decreaseStock(productId, newStock);
 
     StockMovement movement = new StockMovement();
     movement.setProductId(productId);

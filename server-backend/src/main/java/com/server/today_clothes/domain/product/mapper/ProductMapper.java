@@ -15,6 +15,7 @@ public interface ProductMapper {
   void updateDiscountedStock(@Param("id") Long id, @Param("discountedStock") int discountedStock);
   int decreaseDiscountedStockSafe(@Param("id") Long id);
   void update(Product product);
-  void updateStock(@Param("id") Long id, @Param("stock") int stock);
+  void updateStock(@Param("id") Long id, @Param("quantity") int quantity);
+  void decreaseStock(@Param("id") Long id, @Param("quantity") int quantity);
   void deleteById(Long id);
 }
