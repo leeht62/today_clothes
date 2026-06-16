@@ -34,7 +34,7 @@ Today Clothes는 이 문제를 해결하기 위해 판매자가 등록한 의류
 
 ## 📚 ERD
 <div align="center">
-  <img width="500" height="855" alt="Untitled diagram-2026-05-24-082811" src="https://github.com/user-attachments/assets/d6d6d8ac-cb36-415c-8ffc-c4798324d743" />
+ <img width="1448" height="1086" alt="ChatGPT Image 2026년 6월 16일 오전 10_11_34" src="https://github.com/user-attachments/assets/6f1acfe8-0461-4ef3-aee1-f690ee83e5e5" />
 </div>
 
 
