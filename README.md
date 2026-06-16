@@ -29,7 +29,7 @@ Today Clothes는 이 문제를 해결하기 위해 판매자가 등록한 의류
 
 ## 🕸️ 4. 아키텍처
 <div align="center">
-   <img width="1448" height="1086" alt="ChatGPT Image 2026년 6월 16일 오전 10_11_34" src="https://github.com/user-attachments/assets/6f1acfe8-0461-4ef3-aee1-f690ee83e5e5" />
+  <img width="691" height="855" alt="image" src="https://github.com/user-attachments/assets/52495957-bfed-4b61-8f1e-f0f22f13a148" />
 </div>
 
 ## 📚 ERD
