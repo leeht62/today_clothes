@@ -29,12 +29,12 @@ Today Clothes는 이 문제를 해결하기 위해 판매자가 등록한 의류
 
 ## 🕸️ 4. 아키텍처
 <div align="center">
-  <img width="500" height="855" alt="today-clothes drawios" src="https://github.com/user-attachments/assets/19fb0303-0794-46cc-aa03-df5c9487a9ed" />
+   <img width="1448" height="1086" alt="ChatGPT Image 2026년 6월 16일 오전 10_11_34" src="https://github.com/user-attachments/assets/6f1acfe8-0461-4ef3-aee1-f690ee83e5e5" />
 </div>
 
 ## 📚 ERD
 <div align="center">
- <img width="1448" height="1086" alt="ChatGPT Image 2026년 6월 16일 오전 10_11_34" src="https://github.com/user-attachments/assets/6f1acfe8-0461-4ef3-aee1-f690ee83e5e5" />
+ 
 </div>
 
 
