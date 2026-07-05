@@ -71,34 +71,24 @@ class ProductAiImageRequest(BaseModel):
     category: str
 
 async def generate_product_ai_image(input_data: ProductAiImageRequest):
-    image_response = requests.get(input_data.originalImage, timeout=20)
-
-    if image_response.status_code != 200:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Original image download failed: {image_response.status_code}"
-        )
-
-    original_image = Image.open(BytesIO(image_response.content)).convert("RGBA")
-
-    removed_background = remove(original_image)
-
-    cutout_buffer = BytesIO()
-    removed_background.save(cutout_buffer, format="PNG")
-    cutout_buffer.seek(0)
-
     weather_prompt = make_weather_prompt()
 
+    product_description = describe_product_image(
+        input_data.originalImage,
+        input_data.productName,
+        input_data.category,
+    )
+
     prompt = (
-        f"Create a realistic fashion lookbook image of a person wearing the clothing item "
-        f"from the reference image. "
-        f"The outfit must be suitable for this weather: {weather_prompt} "
-        f"Product name: {input_data.productName}. "
-        f"Category: {input_data.category}. "
-        f"Keep the clothing item visually consistent with the reference image. "
-        f"Show a full-body fashion model wearing the item, natural pose, realistic body, "
-        f"clean background, premium online shopping mall style, realistic lighting, "
-        f"high resolution, commercial fashion photography."
+        f"Create a realistic full-body fashion photo of one human model wearing this clothing item: "
+        f"{product_description}. "
+        f"The outfit must be suitable for today's weather: {weather_prompt}. "
+        f"The model must be wearing the item as the main clothing piece. "
+        f"Do not show a product-only image, flat lay, hanger, mannequin, or floating clothing. "
+        f"Do not replace the main item with a coat, jacket, suit, or unrelated outfit unless weather requires layering. "
+        f"Preserve the item's main color, garment type, logo/text, print, and pattern as much as possible. "
+        f"Natural standing pose, realistic body, urban casual styling, clean shopping mall background, "
+        f"realistic lighting, high resolution commercial fashion photography."
     )
 
     response = requests.post(
@@ -107,14 +97,11 @@ async def generate_product_ai_image(input_data: ProductAiImageRequest):
             "Authorization": f"Bearer {STABLE_DIFFUSION_API_KEY}",
             "Accept": "image/*",
         },
-        files={
-            "image": ("cutout.png", cutout_buffer, "image/png"),
-        },
+        files={"none": ""},
         data={
             "model": "sd3.5-large-turbo",
-            "mode": "image-to-image",
             "prompt": prompt,
-            "strength": "0.55",
+            "aspect_ratio": "1:1",
             "output_format": "jpeg",
         },
     )
@@ -149,3 +136,41 @@ def upload_ai_image_to_s3(image_bytes: bytes, product_id: int) -> str:
     )
 
     return f"{AWS_S3_PUBLIC_BASE_URL}/{object_key}"
+
+def describe_product_image(image_url: str, product_name: str, category: str) -> str:
+    client = openai.OpenAI(api_key=OPEN_AI_API_KEY)
+
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You describe clothing product images for fashion image generation. "
+                    "Focus on garment type, color, sleeve length, fit, print, logo, text, pattern, and visual details. "
+                    "Return only a concise English description."
+                ),
+            },
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            f"Describe this clothing item accurately. "
+                            f"Product name: {product_name}. Category: {category}."
+                        ),
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": image_url
+                        },
+                    },
+                ],
+            },
+        ],
+        temperature=0.2,
+    )
+
+    return completion.choices[0].message.content

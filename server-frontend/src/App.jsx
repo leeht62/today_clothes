@@ -6,9 +6,13 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Posts from './pages/Posts'
+import SellerBoardForm from './pages/SellerBoardForm'
 import Weather from './pages/Weather'
 import Ranking from './pages/Ranking'
 import PostDetail from './pages/PostDetail'
+import SellerProductForm from './pages/SellerProductForm'
+import SellerProducts from './pages/SellerProducts'
+import SellerRegister from './pages/SellerRegister'
 import ToastContainer from './components/ToastContainer' 
 
 function App() {
@@ -25,6 +29,11 @@ function App() {
               <Route path="/posts/:id" element={<PostDetail />} />
               <Route path="/weather" element={<Weather />} />
               <Route path="/ranking" element={<Ranking />} />
+              <Route path="/seller" element={<SellerProducts />} />
+              <Route path="/seller/register" element={<SellerRegister />} />
+              <Route path="/seller/products" element={<SellerProducts />} />
+              <Route path="/seller/products/new" element={<SellerProductForm />} />
+              <Route path="/seller/boards/new" element={<SellerBoardForm />} />
             </Routes>
             <ToastContainer />
           </Layout>

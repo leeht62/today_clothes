@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { weatherAPI } from '../lib/api'
-import { useNavigate } from 'react-router-dom'
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null)
@@ -9,7 +8,6 @@ const Weather = () => {
   const [error, setError] = useState('')
   const [allWeather, setAllWeather] = useState([])
   const [showAll, setShowAll] = useState(false)
-  const navigate = useNavigate()
   
   const { isAuthenticated } = useAuth()
 
@@ -18,11 +16,6 @@ const Weather = () => {
     if (!base64String) return ''
     const cleanString = base64String.replace(/\s/g, '') // 공백/줄바꿈 제거
     return `data:image/${format};base64,${cleanString}`
-  }
-
-  const handleGoToPost = (weatherData) => {
-    console.log('우리가 봐야할 Weather ID:', weatherData.id)
-    navigate('/posts', { state: { weatherData } })
   }
 
   const handleGetWeatherImage = async () => {
@@ -108,13 +101,6 @@ const Weather = () => {
                 온도: {weatherData.weather_prompt}°C
               </p>
             )}
-            <button
-                  onClick={() => handleGoToPost(weatherData)}
-                  className="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-               게시글 작성하기
-            </button>
-                  
           </div>
         </div>
       )}
@@ -149,12 +135,6 @@ const Weather = () => {
                       className="mt-2 w-full h-32 object-cover rounded"
                     />
                   )}
-                  <button
-                  onClick={() => handleGoToPost(weather)}
-                  className="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                  >
-                    게시글 작성하기
-                  </button>
                 </div>
               ))}
             </div>
