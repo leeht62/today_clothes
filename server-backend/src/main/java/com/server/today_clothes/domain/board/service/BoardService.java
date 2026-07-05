@@ -2,6 +2,7 @@ package com.server.today_clothes.domain.board.service;
 
 
 import com.server.today_clothes.domain.board.VO.Board;
+import com.server.today_clothes.domain.board.dto.BoardDetailDto;
 import com.server.today_clothes.domain.product.service.ProductService;
 import com.server.today_clothes.domain.seller.VO.Seller;
 import com.server.today_clothes.domain.seller.service.SellerService;
@@ -59,6 +60,11 @@ public class BoardService {
     dto.setContent(board.getContent());
     dto.setWeatherId(board.getWeather() != null ? board.getWeather().getId() : null);
     return dto;
+  }
+
+  public BoardDetailDto findBoardDetail(Long id) {
+    Board board = boardMapper.findById(id);
+    return new BoardDetailDto(board);
   }
 
   public List<BoardDto> findAllBoard(){

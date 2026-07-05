@@ -18,6 +18,7 @@ public class Product {
   private Integer salePrice;
   private Integer discountedPrice;
   private Integer stock;
+  private Product product;
   private Integer discountedStock;
   private String originalImage;
   private String aiImage;

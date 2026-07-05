@@ -20,6 +20,15 @@
             <result property="description" column="weather.description"/>
             <result property="image" column="weather.image"/>
         </association>
+
+        <association property="product" javaType="com.server.today_clothes.domain.product.VO.Product">
+            <id property="id" column="product.id"/>
+            <result property="name" column="product.name"/>
+            <result property="category" column="product.category"/>
+            <result property="salePrice" column="product.salePrice"/>
+            <result property="originalImage" column="product.originalImage"/>
+            <result property="aiImage" column="product.aiImage"/>
+        </association>
     </resultMap>
     <select id="findAll" resultMap="BoardWithUserAndWeatherMap">
         SELECT b.id, b.title, b.content, b.date, b.product_id,
@@ -31,12 +40,19 @@
     </select>
     <select id="findById" resultMap="BoardWithUserAndWeatherMap" parameterType="long">
         SELECT b.id, b.user_id, b.title, b.content, b.date, b.weather_id, b.product_id,
-               u.id as "user.id", u.user_name as "user.username",
+               u.id as "user.id", u.user_code as "user.userCode", u.user_name as "user.username",
                w.id as "weather.id", w.weather_prompt as "weather.weatherPrompt",
-               w.image as "weather.image"
+               w.image as "weather.image",
+               p.id as "product.id",
+               p.name as "product.name",
+               p.category as "product.category",
+               p.sale_price as "product.salePrice",
+               p.original_image as "product.originalImage",
+               p.ai_image as "product.aiImage"
         FROM boards b
                  JOIN users u ON b.user_id = u.id
                  LEFT JOIN weather w ON b.weather_id = w.id
+                 LEFT JOIN product p ON b.product_id = p.id
         WHERE b.id = #{id}
     </select>
     <insert id="save" parameterType="com.server.today_clothes.domain.board.VO.Board"

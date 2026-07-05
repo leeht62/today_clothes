@@ -1,6 +1,16 @@
 package com.server.today_clothes.domain.board.controller;
 
+import com.server.today_clothes.domain.board.dto.BoardDetailDto;
 import com.server.today_clothes.domain.board.dto.BoardDto;
+import com.server.today_clothes.domain.order.VO.Order;
+import com.server.today_clothes.domain.order.dto.BoardOrderPaymentResponseDto;
+import com.server.today_clothes.domain.order.dto.CreateBoardOrderRequestDto;
+import com.server.today_clothes.domain.order.dto.OrderResponseDto;
+import com.server.today_clothes.domain.order.service.OrderService;
+import com.server.today_clothes.domain.payment.VO.Payment;
+import com.server.today_clothes.domain.payment.dto.PaymentResponseDto;
+import com.server.today_clothes.domain.payment.service.PaymentService;
+import com.server.today_clothes.domain.user.VO.User;
 import com.server.today_clothes.domain.user.mapper.UserMapper;
 import com.server.today_clothes.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +29,8 @@ import java.util.List;
 public class BoardController {
   private final BoardService boardService;
   private final UserMapper userMapper;
+  private final OrderService orderService;
+  private final PaymentService paymentService;
   //모든 Board 조회
   @GetMapping("/getBoard")
   public ResponseEntity<List<BoardDto>> getBoard(){
@@ -37,11 +49,30 @@ public class BoardController {
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
-  //Board 1개씩 조회
-  @GetMapping("/{boardId}/read")
+  @PostMapping("/{boardId}/orders")
+  public ResponseEntity<BoardOrderPaymentResponseDto> createOrderFromBoard(
+      @PathVariable Long boardId,
+      @RequestBody CreateBoardOrderRequestDto request,
+      Principal principal
+  ) {
+    String userName = principal.getName();
+    User user = userMapper.findByUserName(userName).orElseThrow();
 
-  public ResponseEntity<BoardDto> ReadBoard(@PathVariable Long boardId){
-    return ResponseEntity.ok(boardService.findBoard(boardId));
+    Order order = orderService.createOrderFromBoard(
+        user.getId(),
+        boardId,
+        request.getQuantity(),
+        request.getOrderType()
+    );
+
+    Payment payment = paymentService.createPayment(order.getId(), user.getId());
+
+    BoardOrderPaymentResponseDto response = new BoardOrderPaymentResponseDto(
+        new OrderResponseDto(order),
+        new PaymentResponseDto(payment)
+    );
+
+    return ResponseEntity.ok(response);
   }
 
   //Board 수정
@@ -51,6 +82,14 @@ public class BoardController {
     boardService.update(boardDto);
     return ResponseEntity.ok(null);
   }
+
+  @GetMapping("/{boardId}/read")
+  public ResponseEntity<BoardDetailDto> readBoard(@PathVariable Long boardId) {
+    return ResponseEntity.ok(boardService.findBoardDetail(boardId));
+  }
+
+
+
   //Board 삭제
   @PatchMapping("/{boardId}/delete")
   public ResponseEntity<Void> delete(@PathVariable Long boardId) {

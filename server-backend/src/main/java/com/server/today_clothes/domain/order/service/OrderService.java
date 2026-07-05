@@ -1,5 +1,7 @@
 package com.server.today_clothes.domain.order.service;
 
+import com.server.today_clothes.domain.board.VO.Board;
+import com.server.today_clothes.domain.board.mapper.BoardMapper;
 import com.server.today_clothes.domain.order.VO.Order;
 import com.server.today_clothes.domain.order.VO.OrderStatus;
 import com.server.today_clothes.domain.order.VO.OrderType;
@@ -20,6 +22,7 @@ public class OrderService {
 
   private final OrderMapper orderMapper;
   private final ProductService productService;
+  private final BoardMapper boardMapper;
 
   @Transactional
   public Order createOrder(Long userId, Long productId, Integer quantity, OrderType orderType) {
@@ -79,6 +82,21 @@ public class OrderService {
 
       throw e;
     }
+  }
+
+  @Transactional
+  public Order createOrderFromBoard(Long userId, Long boardId, Integer quantity, OrderType orderType) {
+    Board board = boardMapper.findById(boardId);
+
+    if (board == null) {
+      throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
+    }
+
+    if (board.getProductId() == null) {
+      throw new IllegalStateException("상품이 연결되지 않은 게시글입니다.");
+    }
+
+    return createOrder(userId, board.getProductId(), quantity, orderType);
   }
 
   public Order findOrder(Long orderId) {
