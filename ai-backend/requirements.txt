@@ -5,3 +5,7 @@ requests==2.32.4
 xmltodict==0.14.2
 openai==1.95.1
 python-dotenv==1.1.1
+pillow
+rembg
+onnxruntime
+boto3

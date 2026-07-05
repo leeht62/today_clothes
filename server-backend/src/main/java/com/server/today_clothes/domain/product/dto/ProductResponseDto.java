@@ -16,6 +16,7 @@ public class ProductResponseDto {
   private Integer salePrice;
   private Integer discountedPrice;
   private Integer stock;
+  private String originalImage;
   private String aiImage;
   private String status;
 
@@ -26,6 +27,7 @@ public class ProductResponseDto {
     this.salePrice = product.getSalePrice();
     this.discountedPrice = product.getDiscountedPrice();
     this.stock = product.getStock();
+    this.originalImage = product.getOriginalImage();
     this.aiImage = product.getAiImage();
     this.status = product.getStatus();
   }
