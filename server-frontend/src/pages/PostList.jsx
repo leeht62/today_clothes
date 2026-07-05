@@ -123,7 +123,7 @@ const PostList = () => {
               onClick={() => setError('')}
               className="ml-2 text-red-500 hover:text-red-700"
             >
-              ✕
+              닫기
             </button>
           </div>
         )}
@@ -152,7 +152,7 @@ const PostList = () => {
                     className="text-red-500 hover:text-red-700 transition-colors"
                     disabled={!isAuthenticated}
                   >
-                    ❤️ 좋아요
+                    좋아요
                   </button>
                   <span>좋아요: {post.likeCount ?? 0}</span>
                 </div>

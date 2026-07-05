@@ -1,8 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
+const navLinkClass = 'rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900'
+
 const Layout = ({ children }) => {
-  const { user, logout, isAuthenticated } = useAuth()
+  const { logout, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -12,83 +14,67 @@ const Layout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-xl font-bold text-gray-900">
-                Today Clothes
-              </Link>
-            </div>
-            
-            <nav className="flex items-center space-x-4">
-              <Link 
-                to="/" 
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
+      <header className="border-b bg-white shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex min-h-16 flex-col gap-3 py-3 lg:flex-row lg:items-center lg:justify-between lg:py-0">
+            <Link to="/" className="text-xl font-bold text-gray-900">
+              Today Clothes
+            </Link>
+
+            <nav className="flex flex-wrap items-center gap-2">
+              <Link to="/" className={navLinkClass}>
                 홈
               </Link>
-              <Link 
-                to="/posts" 
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
+              <Link to="/posts" className={navLinkClass}>
                 게시글
               </Link>
-              <Link 
-                to="/weather" 
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
+              <Link to="/weather" className={navLinkClass}>
                 날씨
               </Link>
-              <Link 
-                to="/ranking" 
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                순위
+              <Link to="/ranking" className={navLinkClass}>
+                랭킹
               </Link>
-              
+
               {isAuthenticated ? (
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">
-                    안녕하세요!
-                  </span>
+                <>
+                  <Link to="/seller/register" className={navLinkClass}>
+                    셀러 등록
+                  </Link>
+                  <Link to="/seller/products" className={navLinkClass}>
+                    셀러 상품
+                  </Link>
+                  <span className="px-3 py-2 text-sm text-gray-600">환영합니다</span>
                   <button
+                    type="button"
                     onClick={handleLogout}
-                    className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
+                    className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
                   >
                     로그아웃
                   </button>
-                </div>
+                </>
               ) : (
-                <div className="flex items-center space-x-4">
-                  <Link
-                    to="/login"
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                  >
+                <>
+                  <Link to="/login" className={navLinkClass}>
                     로그인
                   </Link>
                   <Link
                     to="/register"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                   >
                     회원가입
                   </Link>
-                </div>
+                </>
               )}
             </nav>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {children}
-      </main>
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</main>
 
-      <footer className="bg-white border-t mt-12">
-        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-gray-600">
-            <p>&copy; 2024 Today Clothes. All rights reserved.</p>
-          </div>
+      <footer className="mt-12 border-t bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600">&copy; 2024 Today Clothes. All rights reserved.</p>
         </div>
       </footer>
     </div>
