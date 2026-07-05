@@ -21,15 +21,21 @@ public class Board {
   private String content;
   private Weather weather;
   private LocalDateTime date;
+  private Long productId;
+  private Long weatherId;
 
 
   public Board(BoardDto boardDto) {
     this.title = boardDto.getTitle();
     this.content = boardDto.getContent();
-    this.date =LocalDateTime.now();
-    this.weather = new Weather();
-    this.weather.setId(boardDto.getWeatherId());
+    this.date = LocalDateTime.now();
+    this.productId = boardDto.getProductId();
+    this.weatherId = boardDto.getWeatherId();
 
+    if (boardDto.getWeatherId() != null) {
+      this.weather = new Weather();
+      this.weather.setId(boardDto.getWeatherId());
+    }
   }
 
 }

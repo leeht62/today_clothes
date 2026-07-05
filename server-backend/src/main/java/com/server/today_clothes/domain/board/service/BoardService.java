@@ -2,6 +2,9 @@ package com.server.today_clothes.domain.board.service;
 
 
 import com.server.today_clothes.domain.board.VO.Board;
+import com.server.today_clothes.domain.product.service.ProductService;
+import com.server.today_clothes.domain.seller.VO.Seller;
+import com.server.today_clothes.domain.seller.service.SellerService;
 import com.server.today_clothes.global.notification.websocket.MessageService;
 import com.server.today_clothes.global.config.RedisService;
 import com.server.today_clothes.domain.user.VO.User;
@@ -26,14 +29,21 @@ public class BoardService {
   private final RedisService redisService;
   private final RedisTemplate<String, Object> redisTemplate;
   private final MessageService messageService;
+  private final ProductService productService;
+  private final SellerService sellerService;
 
-  public BoardDto saveBoard(BoardDto boardDto,String username){
-    User user=userMapper.findByUserName(username).orElseThrow();
-    Board board=new Board(boardDto);
+  public BoardDto saveSellerProductBoard(BoardDto boardDto, String username) {
+    User user = userMapper.findByUserName(username).orElseThrow();
+    Seller seller = sellerService.findSellerByUserName(username);
+
+    productService.findProductOwnedBySeller(boardDto.getProductId(), seller.getId());
+
+    Board board = new Board(boardDto);
     board.setUser(user);
+
     boardMapper.save(board);
-    BoardDto boardDtos = new BoardDto(board);
-    return boardDtos;
+
+    return new BoardDto(board);
   }
 
   public void deleteBoard(Long id){
@@ -45,6 +55,7 @@ public class BoardService {
     BoardDto dto = new BoardDto();
     dto.setId(board.getId());
     dto.setTitle(board.getTitle());
+    dto.setProductId(board.getProductId());
     dto.setContent(board.getContent());
     dto.setWeatherId(board.getWeather() != null ? board.getWeather().getId() : null);
     return dto;
