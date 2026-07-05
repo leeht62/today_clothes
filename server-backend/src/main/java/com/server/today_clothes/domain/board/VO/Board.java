@@ -1,5 +1,6 @@
 package com.server.today_clothes.domain.board.VO;
 import com.server.today_clothes.domain.board.dto.BoardDto;
+import com.server.today_clothes.domain.product.VO.Product;
 import com.server.today_clothes.domain.user.VO.User;
 import com.server.today_clothes.domain.weather.VO.Weather;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class Board {
   private Weather weather;
   private LocalDateTime date;
   private Long productId;
+  private Product product;
   private Long weatherId;
 
 
