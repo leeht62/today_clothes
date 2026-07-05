@@ -19,6 +19,7 @@ public class BoardDto {
   private String userCode;
   private String name;
   private Long weatherId;
+  private Long productId;
 
 
   public BoardDto(Board board) {
@@ -26,8 +27,11 @@ public class BoardDto {
     this.title = board.getTitle();
     this.content = board.getContent();
     this.date = board.getDate();
-    this.userCode = board.getUser().getUserCode();
-    this.name =  board.getUser().getUsername();
+    this.productId = board.getProductId();
+    if (board.getUser() != null) {
+      this.userCode = board.getUser().getUserCode();
+      this.name = board.getUser().getUsername();
+    }
     this.weatherId = board.getWeather() != null ? board.getWeather().getId() : null;
   }
 }

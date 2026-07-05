@@ -7,6 +7,7 @@
         <result property="title" column="title"/>
         <result property="content" column="content"/>
         <result property="date" column="date"/>
+        <result property="productId" column="product_id"/>
 
         <association property="user" javaType="com.server.today_clothes.domain.user.VO.User">
             <id property="id" column="user.id"/>
@@ -21,15 +22,15 @@
         </association>
     </resultMap>
     <select id="findAll" resultMap="BoardWithUserAndWeatherMap">
-        SELECT b.id, b.title, b.content, b.date,
+        SELECT b.id, b.title, b.content, b.date, b.product_id,
                u.id as "user.id", u.user_code as "user.userCode",
                w.id as "weather.id", w.weather_prompt, w.image
         FROM boards b
                  LEFT JOIN users u ON b.user_id = u.id
                  LEFT JOIN weather w ON b.weather_id = w.id
     </select>
-    <select id="findById" resultType="com.server.today_clothes.domain.board.VO.Board" parameterType="long">
-        SELECT b.id, b.user_id, b.title, b.content, b.date, b.weather_id,
+    <select id="findById" resultMap="BoardWithUserAndWeatherMap" parameterType="long">
+        SELECT b.id, b.user_id, b.title, b.content, b.date, b.weather_id, b.product_id,
                u.id as "user.id", u.user_name as "user.username",
                w.id as "weather.id", w.weather_prompt as "weather.weatherPrompt",
                w.image as "weather.image"
@@ -40,17 +41,23 @@
     </select>
     <insert id="save" parameterType="com.server.today_clothes.domain.board.VO.Board"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO boards (user_id, title, content,date,weather_id)
-        VALUES (#{user.id}, #{title}, #{content},NOW(),#{weather.id})
+        INSERT INTO boards (user_id, title, content, date, weather_id, product_id)
+        VALUES (
+                   #{user.id},
+                   #{title},
+                   #{content},
+                   NOW(),
+                   #{weatherId},
+                   #{productId}
+               )
     </insert>
     <update id="update" parameterType="com.server.today_clothes.domain.board.VO.Board">
         UPDATE boards
         SET
-            user_id = #{user.id},
             title = #{title},
             content = #{content},
-            weather_id = #{weather.id}
-
+            weather_id = #{weatherId},
+            product_id = #{productId}
         WHERE id = #{id}
     </update>
     <delete id="deleteById" parameterType="long">
@@ -60,6 +67,7 @@
     <insert id="insertLike">
         INSERT INTO user_likes (user_id, board_id)
         VALUES (#{userId}, #{boardId})
+        ON CONFLICT (user_id, board_id) DO NOTHING
     </insert>
 
     <delete id="deleteLike">

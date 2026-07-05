@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS boards(
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     weather_id INTEGER REFERENCES weather(id) ON DELETE SET NULL,
     title VARCHAR(100),
+    product_id INTEGER,
     content TEXT,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );

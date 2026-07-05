@@ -26,20 +26,24 @@ public class BoardController {
     System.out.println("Board성공");
   return ResponseEntity.ok(boardService.findAllBoard());
   }
+
+  @PostMapping("/seller/write")
+  public ResponseEntity<BoardDto> createSellerProductBoard(
+      @RequestBody BoardDto boardDto,
+      Principal principal
+  ) {
+    String userCode = principal.getName();
+    BoardDto response = boardService.saveSellerProductBoard(boardDto, userCode);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
   //Board 1개씩 조회
   @GetMapping("/{boardId}/read")
 
   public ResponseEntity<BoardDto> ReadBoard(@PathVariable Long boardId){
     return ResponseEntity.ok(boardService.findBoard(boardId));
   }
-  //Board 생성
-  @PostMapping("/write")
-  public ResponseEntity<BoardDto> create(@RequestBody BoardDto boardDto,
-                                         Principal principal) {
-    String userCode = principal.getName();
-    BoardDto boardDtos=boardService.saveBoard(boardDto,userCode);
-    return ResponseEntity.status(HttpStatus.CREATED).body(boardDtos);
-  }
+
   //Board 수정
   @PutMapping("/{boardId}/modify")
   public ResponseEntity<Void> update(@PathVariable Long boardId) {
