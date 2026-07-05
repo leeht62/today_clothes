@@ -13,5 +13,5 @@ public class ProductRequestDto {
   private Integer purchasePrice;
   private Integer salePrice;
   private Integer stock;
-  private String originalImage;
+  private String originalImageKey;
 }
