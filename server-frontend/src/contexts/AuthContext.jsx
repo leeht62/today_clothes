@@ -24,6 +24,8 @@ export const AuthProvider = ({ children }) => {
         const userInfo = JSON.parse(savedUserInfo)
         setUser({ 
           token,
+          id: userInfo.id || userInfo.userId,
+          userId: userInfo.userId || userInfo.id,
           userCode: userInfo.userCode,
           username: userInfo.username
         })
@@ -49,6 +51,8 @@ export const AuthProvider = ({ children }) => {
       
       // 사용자 정보도 localStorage에 저장
       localStorage.setItem('userInfo', JSON.stringify({
+        id: userInfo.id || userInfo.userId,
+        userId: userInfo.userId || userInfo.id,
         userCode: userInfo.userCode,
         username: userInfo.username
       }))
@@ -56,12 +60,16 @@ export const AuthProvider = ({ children }) => {
       // user 상태에 모든 필요한 정보 포함
       setUser({ 
         token: accessToken,
+        id: userInfo.id || userInfo.userId,
+        userId: userInfo.userId || userInfo.id,
         userCode: userInfo.userCode,
         username: userInfo.username
       })
       
       console.log('설정된 user:', { 
         token: accessToken,
+        id: userInfo.id || userInfo.userId,
+        userId: userInfo.userId || userInfo.id,
         userCode: userInfo.userCode,
         username: userInfo.username
       })

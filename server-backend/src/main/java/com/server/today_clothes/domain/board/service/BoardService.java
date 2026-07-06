@@ -33,6 +33,14 @@ public class BoardService {
   private final ProductService productService;
   private final SellerService sellerService;
 
+  public BoardDto saveBoard(BoardDto boardDto, String username) {
+    User user = userMapper.findByUserName(username).orElseThrow();
+    Board board = new Board(boardDto);
+    board.setUser(user);
+    boardMapper.save(board);
+    return new BoardDto(board);
+  }
+
   public BoardDto saveSellerProductBoard(BoardDto boardDto, String username) {
     User user = userMapper.findByUserName(username).orElseThrow();
     Seller seller = sellerService.findSellerByUserName(username);

@@ -49,6 +49,12 @@
         ORDER BY created_at DESC
     </select>
 
+    <update id="detachBoardsFromProduct" parameterType="long">
+        UPDATE boards
+        SET product_id = NULL
+        WHERE product_id = #{productId}
+    </update>
+
     <update id="update" parameterType="com.server.today_clothes.domain.product.VO.Product">
         UPDATE product
         <set>

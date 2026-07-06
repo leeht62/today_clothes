@@ -43,6 +43,9 @@ const Layout = ({ children }) => {
                   <Link to="/seller/products" className={navLinkClass}>
                     셀러 상품
                   </Link>
+                  <Link to="/orders" className={navLinkClass}>
+                    내 주문
+                  </Link>
                   <span className="px-3 py-2 text-sm text-gray-600">환영합니다</span>
                   <button
                     type="button"

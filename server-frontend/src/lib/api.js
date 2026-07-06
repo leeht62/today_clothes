@@ -62,6 +62,7 @@ export const sellerProductAPI = {
   getMyProducts: () => api.get('/seller/products'),
   generateAiImage: (productId) => api.post(`/seller/products/${productId}/ai-image`),
   updateProduct: (productId, productData) => api.put(`/seller/products/${productId}`, productData),
+  deleteProduct: (productId) => api.delete(`/seller/products/${productId}`),
   stockIn: (productId, stockData) => api.post(`/seller/products/${productId}/stock/in`, stockData),
   startDiscount: (productId, discountData) => api.post(`/seller/products/${productId}/discount`, discountData),
 }
@@ -80,6 +81,7 @@ export const productAPI = {
 export const boardAPI = {
   getBoards: () => api.get('/boards/getBoard'),
   getBoard: (id) => api.get(`/boards/${id}/read`),
+  createBoard: (boardData) => api.post('/boards/write', boardData),
   createSellerProductBoard: (boardData) => api.post('/boards/seller/write', boardData),
   updateBoard: (id, boardData) => api.put(`/boards/${id}/modify`, boardData),
   deleteBoard: (id) => api.patch(`/boards/${id}/delete`),
@@ -92,6 +94,7 @@ export const boardAPI = {
 
 export const orderAPI = {
   createOrder: (orderData) => api.post('/orders', orderData),
+  getMyOrders: () => api.get('/orders/me'),
   getOrder: (orderId) => api.get(`/orders/${orderId}`),
   getOrdersByUserId: (userId) => api.get(`/orders/users/${userId}`),
   cancelOrder: (orderId) => api.patch(`/orders/${orderId}/cancel`),
@@ -109,6 +112,7 @@ export const weatherAPI = {
   getWeatherImage: () => api.get('/weather-image'),
   getAllWeather: () => api.get('/find-all-weather'),
   getWeather: (id) => api.get(`/find-one-weather/${id}`),
+  regenerateWeatherImage: () => api.delete('/weather-image/cache'),
 }
 
 export const commentAPI = {
