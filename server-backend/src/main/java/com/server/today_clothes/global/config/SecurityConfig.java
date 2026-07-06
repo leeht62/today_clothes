@@ -48,6 +48,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/sign-in", "/sign-up").permitAll()
+            .requestMatchers(HttpMethod.GET, "/payments/success", "/payments/fail").permitAll()
             .requestMatchers("/logout").authenticated()
             .requestMatchers(HttpMethod.GET, "/boards/**").permitAll()
             .requestMatchers("/weather-image", "/find-all-weather").authenticated()

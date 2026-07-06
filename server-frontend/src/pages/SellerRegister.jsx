@@ -13,9 +13,11 @@ const SellerRegister = () => {
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [formData, setFormData] = useState(initialForm)
+  const [sellerExists, setSellerExists] = useState(false)
   const [checking, setChecking] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -25,8 +27,16 @@ const SellerRegister = () => {
 
     const checkSeller = async () => {
       try {
-        await sellerAPI.getMe()
-        navigate('/seller/products', { replace: true })
+        const response = await sellerAPI.getMe()
+        const seller = response.data
+
+        setSellerExists(true)
+        setFormData({
+          shopName: seller.shopName || '',
+          address: seller.address || '',
+          phone: seller.phone || '',
+        })
+        setChecking(false)
       } catch (err) {
         if (err.response?.status === 401) {
           navigate('/login', { replace: true })
@@ -58,18 +68,25 @@ const SellerRegister = () => {
 
     setSubmitting(true)
     setError('')
+    setMessage('')
 
     try {
-      await sellerAPI.register({
+      const payload = {
         shopName: formData.shopName.trim(),
         address: formData.address.trim(),
         phone: formData.phone.trim(),
-      })
+      }
 
-      navigate('/seller/products', { replace: true })
+      if (sellerExists) {
+        await sellerAPI.updateMe(payload)
+        setMessage('판매자 정보가 수정되었습니다.')
+      } else {
+        await sellerAPI.register(payload)
+        navigate('/seller/products', { replace: true })
+      }
     } catch (err) {
-      console.error('셀러 등록 실패:', err)
-      setError(err.response?.data?.message || err.response?.data || '셀러 등록에 실패했습니다.')
+      console.error('셀러 정보 저장 실패:', err)
+      setError(err.response?.data?.message || err.response?.data || '셀러 정보 저장에 실패했습니다.')
     } finally {
       setSubmitting(false)
     }
@@ -102,9 +119,9 @@ const SellerRegister = () => {
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <p className="text-sm font-medium text-blue-600">Seller</p>
-        <h1 className="text-3xl font-bold text-gray-900">셀러 등록</h1>
+        <h1 className="text-3xl font-bold text-gray-900">{sellerExists ? '판매자 정보 수정' : '셀러 등록'}</h1>
         <p className="mt-2 text-sm text-gray-600">
-          상품을 등록하려면 먼저 판매자 정보를 등록해야 합니다.
+          {sellerExists ? '등록된 판매자 정보를 관리합니다.' : '상품을 등록하려면 먼저 판매자 정보를 등록해야 합니다.'}
         </p>
       </div>
 
@@ -112,6 +129,12 @@ const SellerRegister = () => {
         {error && (
           <div className="mb-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {error}
+          </div>
+        )}
+
+        {message && (
+          <div className="mb-5 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            {message}
           </div>
         )}
 
@@ -168,7 +191,7 @@ const SellerRegister = () => {
             disabled={submitting}
             className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {submitting ? '등록 중...' : '셀러 등록'}
+            {submitting ? '저장 중...' : sellerExists ? '정보 수정' : '셀러 등록'}
           </button>
         </div>
       </form>

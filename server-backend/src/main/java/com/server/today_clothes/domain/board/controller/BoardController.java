@@ -49,6 +49,16 @@ public class BoardController {
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
+  @PostMapping("/write")
+  public ResponseEntity<BoardDto> create(
+      @RequestBody BoardDto boardDto,
+      Principal principal
+  ) {
+    String userCode = principal.getName();
+    BoardDto boardDtos = boardService.saveBoard(boardDto, userCode);
+    return ResponseEntity.status(HttpStatus.CREATED).body(boardDtos);
+  }
+
   @PostMapping("/{boardId}/orders")
   public ResponseEntity<BoardOrderPaymentResponseDto> createOrderFromBoard(
       @PathVariable Long boardId,

@@ -95,8 +95,11 @@ public class ProductService {
   }
 
   // 상품 삭제
+  @Transactional
   public void deleteProduct(Long id) {
+    productMapper.detachBoardsFromProduct(id);
     productMapper.deleteById(id);
+
   }
 
   public void startDiscountSale(Long productId, int discountedStock, int discountedPrice) {
@@ -123,7 +126,7 @@ public class ProductService {
     }
 
     if (result == -2) {
-      throw new IllegalStateException("이미 구매한 할인 상품입니다.");
+      throw new IllegalStateException("할인 상품은 한 번만 구매할 수 있습니다.");
     }
 
     int updated = productMapper.decreaseDiscountedStockSafe(productId, quantity);

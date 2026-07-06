@@ -19,4 +19,5 @@ public interface ProductMapper {
   void increaseStock(@Param("id") Long id, @Param("quantity") int quantity);
   int decreaseStock(@Param("id") Long id, @Param("quantity") int quantity);
   void deleteById(Long id);
+  void detachBoardsFromProduct(Long productId);
 }

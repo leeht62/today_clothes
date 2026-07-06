@@ -87,6 +87,17 @@ public class SellerProductController {
     return ResponseEntity.ok(products);
   }
 
+  @DeleteMapping("/{productId}")
+  public ResponseEntity<Void> delete(@PathVariable Long productId) {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    Seller seller = sellerService.findSellerByUserName(userName);
+
+    productService.findProductOwnedBySeller(productId, seller.getId());
+    productService.deleteProduct(productId);
+
+    return ResponseEntity.noContent().build();
+  }
+
   @PostMapping("/{productId}/ai-image")
   public ResponseEntity<ProductResponseDto> requestAiImage(@PathVariable Long productId) {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();

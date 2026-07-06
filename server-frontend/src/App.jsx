@@ -13,6 +13,9 @@ import PostDetail from './pages/PostDetail'
 import SellerProductForm from './pages/SellerProductForm'
 import SellerProducts from './pages/SellerProducts'
 import SellerRegister from './pages/SellerRegister'
+import MyOrders from './pages/MyOrders'
+import PaymentSuccess from './pages/PaymentSuccess'
+import PaymentFail from './pages/PaymentFail'
 import ToastContainer from './components/ToastContainer' 
 
 function App() {
@@ -29,6 +32,9 @@ function App() {
               <Route path="/posts/:id" element={<PostDetail />} />
               <Route path="/weather" element={<Weather />} />
               <Route path="/ranking" element={<Ranking />} />
+              <Route path="/orders" element={<MyOrders />} />
+              <Route path="/payments/success" element={<PaymentSuccess />} />
+              <Route path="/payments/fail" element={<PaymentFail />} />
               <Route path="/seller" element={<SellerProducts />} />
               <Route path="/seller/register" element={<SellerRegister />} />
               <Route path="/seller/products" element={<SellerProducts />} />
