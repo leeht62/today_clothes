@@ -1,6 +1,6 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&color=D8BFD8&height=150&section=header&text=today%20clothes&fontSize=40&fontColor=333333&desc=clothes%20e-commerce&descAlignY=70&descAlign=50)
 ## 👕1. 프로젝트 소개
-Today Clothes는 FastAPI 기반 AI 이미지 처리 서버와 Spring Boot 백엔드를 연동한 AI 기반 의류 커머스 플랫폼입니다. 판매자는 의류 상품과 이미지를 등록할 수 있으며, AI 서버는 업로드된 이미지를 배경 제거 및 날씨 기반 스타일 이미지로 변환합니다. 사용자는 현재 날씨에 어울리는 의류 이미지를 확인하고, 상품을 주문 및 결제할 수 있습니다. 또한 생성된 코디 이미지와 상품 정보를 게시글로 공유하며 다른 사용자와 소통할 수 있습니다.
+Today Clothes는 FastAPI 기반 AI 이미지 처리 서버와 Spring Boot 백엔드를 연동한 AI 기반 의류 커머스 플랫폼입니다. 판매자는 의류 상품과 이미지를 등록할 수 있으며, AI 서버는 업로드된 이미지를 배경 제거 및 날씨 기반 스타일 이미지로 변환합니다. 사용자는 현재 날씨에 어울리는 의류 이미지를 확인하고, 상품을 주문 및 결제할 수 있습니다. 또한 날씨에 따라 AI가 생성한 코디 이미지를 게시글로 공유하며 다른 사용자와 소통할 수 있습니다.
 
 ## ✨ 프로젝트 목표 (Solution)
 사용자는 날씨 정보를 확인하더라도 실제로 어떤 옷차림이 적절한지 빠르게 판단하기 어렵고, 판매자는 상품 이미지를 날씨나 계절 상황에 맞게 가공해 노출하는 데 추가적인 비용과 시간이 필요합니다.
