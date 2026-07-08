@@ -87,7 +87,10 @@ export const boardAPI = {
   deleteBoard: (id) => api.patch(`/boards/${id}/delete`),
   likeBoard: (id) => api.post(`/boards/${id}/like`),
   unlikeBoard: (id) => api.post(`/boards/${id}/unlike`),
-  getTopBoards: (count = 10) => api.get('/boards/top', { params: { count } }),
+  getTopBoards: (options = 10) => {
+    const params = typeof options === 'number' ? { count: options } : options
+    return api.get('/boards/top', { params })
+  },
   getBoardLikeCount: (boardId) => api.get(`/boards/${boardId}/likes/count`),
   createOrderFromBoard: (boardId, orderData) => api.post(`/boards/${boardId}/orders`, orderData),
 }

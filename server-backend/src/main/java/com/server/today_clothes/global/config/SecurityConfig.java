@@ -51,6 +51,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.GET, "/payments/success", "/payments/fail").permitAll()
             .requestMatchers("/logout").authenticated()
             .requestMatchers(HttpMethod.GET, "/boards/**").permitAll()
+            .requestMatchers("/ws/**").permitAll()
             .requestMatchers("/weather-image", "/find-all-weather").authenticated()
             .requestMatchers(HttpMethod.POST, "/boards/**").authenticated()
             .requestMatchers(HttpMethod.PUT, "/boards/**").authenticated()
