@@ -12,6 +12,7 @@
         <association property="user" javaType="com.server.today_clothes.domain.user.VO.User">
             <id property="id" column="user.id"/>
             <result property="userCode" column="user.userCode"/>
+            <result property="username" column="user.username"/>
         </association>
 
         <association property="weather" javaType="com.server.today_clothes.domain.weather.VO.Weather">
