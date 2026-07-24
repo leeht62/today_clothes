@@ -4,6 +4,7 @@ import com.server.today_clothes.domain.product.VO.StockMovement;
 import com.server.today_clothes.domain.product.mapper.ProductMapper;
 import com.server.today_clothes.domain.product.mapper.StockMovementMapper;
 import com.server.today_clothes.global.config.DiscountStockRedisService;
+import com.server.today_clothes.global.config.DiscountStockReserveResult;
 import org.springframework.security.access.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class ProductService {
   private final ProductMapper productMapper;
   private final StockMovementMapper stockMovementMapper;
   private final DiscountStockRedisService discountStockRedisService;
+  private final DiscountStockBroadcastService discountStockBroadcastService;
 
   // 상품 등록
   public void registerProduct(Product product) {
@@ -111,6 +113,7 @@ public class ProductService {
 
     // Redis에 재고 세팅
     discountStockRedisService.initDiscountedStock(productId, discountedStock);
+    discountStockBroadcastService.broadcast(productId, discountedStock);
   }
 
   @Transactional
@@ -119,13 +122,22 @@ public class ProductService {
       throw new IllegalArgumentException("주문 수량은 1 이상이어야 합니다.");
     }
 
-    int result = discountStockRedisService.tryReserveDiscount(productId, userId, quantity);
+    Product product = findProduct(productId);
 
-    if (result == -1) {
+    if (product.getDiscountedStock() == null || product.getDiscountedStock() < quantity) {
+      throw new IllegalStateException("?좎씤 ?ш퀬媛 遺議깊빀?덈떎.");
+    }
+
+    discountStockRedisService.initDiscountedStockIfAbsent(productId, product.getDiscountedStock());
+
+    DiscountStockReserveResult result =
+        discountStockRedisService.tryReserveDiscount(productId, userId, quantity);
+
+    if (result.getCode() == -1) {
       throw new IllegalStateException("할인 재고가 부족합니다.");
     }
 
-    if (result == -2) {
+    if (result.getCode() == -2) {
       throw new IllegalStateException("할인 상품은 한 번만 구매할 수 있습니다.");
     }
 
@@ -142,6 +154,11 @@ public class ProductService {
     movement.setQuantity(quantity);
     movement.setNote("할인 주문 재고 선점 - userId: " + userId);
     stockMovementMapper.save(movement);
+
+    discountStockBroadcastService.broadcast(
+        productId,
+        result.getRemainingStock()
+    );
   }
 
   @Transactional
@@ -151,7 +168,10 @@ public class ProductService {
     }
 
     productMapper.increaseDiscountedStock(productId, quantity);
-    discountStockRedisService.rollbackDiscountReservation(productId, userId, quantity);
+    int remainingStock =
+        discountStockRedisService.rollbackDiscountReservation(productId, userId, quantity);
+
+    discountStockBroadcastService.broadcast(productId, remainingStock);
 
     StockMovement movement = new StockMovement();
     movement.setProductId(productId);
@@ -162,6 +182,9 @@ public class ProductService {
   }
 
   public void rollbackDiscountRedisOnly(Long productId, Long userId, int quantity) {
-    discountStockRedisService.rollbackDiscountReservation(productId, userId, quantity);
+    int remainingStock =
+        discountStockRedisService.rollbackDiscountReservation(productId, userId, quantity);
+
+    discountStockBroadcastService.broadcast(productId, remainingStock);
   }
 }

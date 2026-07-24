@@ -15,6 +15,7 @@ public class ProductResponseDto {
   private String category;
   private Integer salePrice;
   private Integer discountedPrice;
+  private Integer discountedStock;
   private Integer stock;
   private String originalImage;
   private String aiImage;
@@ -26,6 +27,7 @@ public class ProductResponseDto {
     this.category = product.getCategory();
     this.salePrice = product.getSalePrice();
     this.discountedPrice = product.getDiscountedPrice();
+    this.discountedStock = product.getDiscountedStock();
     this.stock = product.getStock();
     this.originalImage = product.getOriginalImage();
     this.aiImage = product.getAiImage();

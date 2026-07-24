@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { boardAPI, commentAPI, productAPI } from '../lib/api'
 import { useAuth } from '../contexts/AuthContext'
 import useWebSocket from '../hooks/WebSocket'
+import useDiscountStockSocket from '../hooks/useDiscountStockSocket'
 
 const formatPrice = (value) => {
   if (value === null || value === undefined) {
@@ -92,6 +93,10 @@ const PostDetail = () => {
   const [toasts, setToasts] = useState([])
 
   const notifications = useWebSocket(user?.token)
+  const discountStockProductId = post?.product?.id || post?.productId
+  const discountSocketEnabled = Boolean(post?.product?.discountedPrice)
+  const { remainingStock: liveDiscountStock, connected: discountStockConnected } =
+    useDiscountStockSocket(discountStockProductId, discountSocketEnabled)
 
   useEffect(() => {
     notifications.forEach((msg) => {
@@ -153,6 +158,26 @@ const PostDetail = () => {
 
     fetchComments()
   }, [id])
+
+  useEffect(() => {
+    if (liveDiscountStock === null || liveDiscountStock === undefined) {
+      return
+    }
+
+    setPost((prev) => {
+      if (!prev?.product) {
+        return prev
+      }
+
+      return {
+        ...prev,
+        product: {
+          ...prev.product,
+          discountedStock: liveDiscountStock,
+        },
+      }
+    })
+  }, [liveDiscountStock])
 
   const handleCommentSubmit = async () => {
     if (!newComment.trim()) return
@@ -253,6 +278,13 @@ const PostDetail = () => {
       return
     }
 
+    const currentDiscountStock = Number(liveDiscountStock ?? product?.discountedStock ?? 0)
+
+    if (orderType === 'DISCOUNT' && currentDiscountStock < orderQuantity) {
+      setError('남은 할인 재고보다 주문 수량이 많습니다.')
+      return
+    }
+
     try {
       setOrderSubmitting(true)
       setError('')
@@ -308,6 +340,8 @@ const PostDetail = () => {
   const isProductPost = Boolean(post.productId || product)
   const postTypeLabel = isProductPost ? '상품 판매 게시글' : '일반 게시글'
   const hasDiscount = Number(product?.discountedPrice || 0) > 0
+  const displayedDiscountStock = Number(liveDiscountStock ?? product?.discountedStock ?? 0)
+  const isDiscountSoldOut = hasDiscount && displayedDiscountStock <= 0
   const selectedUnitPrice = orderType === 'DISCOUNT' && hasDiscount ? product.discountedPrice : product?.salePrice
   const orderTotalAmount = Number(selectedUnitPrice || 0) * Number(quantity || 0)
 
@@ -390,6 +424,24 @@ const PostDetail = () => {
                     )}
                   </dl>
 
+                  {hasDiscount && (
+                    <div
+                      className={`rounded-md border px-3 py-2 text-sm ${
+                        isDiscountSoldOut
+                          ? 'border-red-200 bg-red-50 text-red-700'
+                          : 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-medium">실시간 할인 재고</span>
+                        <span className="text-base font-bold">{displayedDiscountStock}개</span>
+                      </div>
+                      <p className="mt-1 text-xs opacity-80">
+                        {discountStockConnected ? 'WebSocket 연결 중' : '초기 재고 표시 중'}
+                      </p>
+                    </div>
+                  )}
+
                   <div className="border-t border-gray-200 pt-4">
                     {hasDiscount && (
                       <div className="mb-4">
@@ -426,6 +478,7 @@ const PostDetail = () => {
                               name="orderType"
                               value="DISCOUNT"
                               checked={orderType === 'DISCOUNT'}
+                              disabled={isDiscountSoldOut}
                               onChange={(event) => setOrderType(event.target.value)}
                               className="sr-only"
                             />
@@ -461,7 +514,7 @@ const PostDetail = () => {
                     <button
                       type="button"
                       onClick={handleCreateOrder}
-                      disabled={orderSubmitting}
+                      disabled={orderSubmitting || (orderType === 'DISCOUNT' && isDiscountSoldOut)}
                       className="mt-4 w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {orderSubmitting ? '주문 생성 중...' : orderType === 'DISCOUNT' ? '할인 주문하기' : '주문하기'}
